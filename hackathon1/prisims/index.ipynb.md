@@ -1,5 +1,5 @@
 ---
-title: "FiPy Hackathon"
+title: ""
 layout: ipython
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: "MMSP Hackathon 1"
+title: ""
 layout: ipython
 ---
 
