@@ -66,7 +66,7 @@
         }
       },
       "scale": "x",
-      "title": "Simulations for Benchmark 1c",
+      "title": "Simulations for Benchmark 2d",
       "type": "x",
       "values": []
     }
@@ -80,7 +80,7 @@
         },
         "type": "csv"
       },
-      "name": "moose_1c_ia",
+      "name": "moose_2d_sta",
       "transform": [
         {
           "expr": "datum.TotalEnergy",
@@ -92,13 +92,20 @@
           "type": "filter"
         }
       ],
-      "url": "https://gist.githubusercontent.com/wd15/41e21ea1090057c42a59380d90367763/raw/7a9e0b9a67528b5567c62f85d9598f580d9b4508/hackathon_p1_tshape_IA.csv"
+      "url": "https://gist.githubusercontent.com/wd15/41e21ea1090057c42a59380d90367763/raw/eba1e44ec25a2d9a906b2c802596778892b2f676/hackathon_p2_sphere_STA_v2_dfdt.csv"
     },
     {
-      "name": "mmsp_1c_travis",
+      "format": {
+        "parse": {
+          "TotalEnergy": "number",
+          "time": "number"
+        },
+        "type": "csv"
+      },
+      "name": "moose_2d_ia",
       "transform": [
         {
-          "expr": "datum.energy",
+          "expr": "datum.TotalEnergy",
           "field": "free_energy",
           "type": "formula"
         },
@@ -107,108 +114,7 @@
           "type": "filter"
         }
       ],
-      "values": [
-        {
-          "energy": 31.8815,
-          "time": 0
-        },
-        {
-          "energy": 31.7653,
-          "time": 7.61719
-        },
-        {
-          "energy": 31.3578,
-          "time": 15.2344
-        },
-        {
-          "energy": 29.8382,
-          "time": 22.8516
-        },
-        {
-          "energy": 26.3998,
-          "time": 30.4688
-        },
-        {
-          "energy": 23.095,
-          "time": 38.0859
-        },
-        {
-          "energy": 21.4502,
-          "time": 45.7031
-        },
-        {
-          "energy": 20.4617,
-          "time": 53.3203
-        },
-        {
-          "energy": 19.8369,
-          "time": 60.9375
-        },
-        {
-          "energy": 19.3948,
-          "time": 68.5547
-        },
-        {
-          "energy": 19.0146,
-          "time": 76.1719
-        }
-      ]
-    },
-    {
-      "name": "fipy_1c_travis",
-      "transform": [
-        {
-          "expr": "datum.energy",
-          "field": "free_energy",
-          "type": "formula"
-        },
-        {
-          "test": "datum.time > 0.01",
-          "type": "filter"
-        }
-      ],
-      "values": [
-        {
-          "energy": 127.53177108403266,
-          "time": 0.0
-        },
-        {
-          "energy": 76.5639690462665,
-          "time": 32.8841185542631
-        },
-        {
-          "energy": 67.31056356391991,
-          "time": 61.493683159712376
-        },
-        {
-          "energy": 59.43720169968911,
-          "time": 91.01129671969083
-        },
-        {
-          "energy": 52.2068157789372,
-          "time": 121.93828824766261
-        },
-        {
-          "energy": 49.56519823690231,
-          "time": 151.12420163657532
-        },
-        {
-          "energy": 48.269200347769086,
-          "time": 176.77526573600935
-        },
-        {
-          "energy": 46.82245070913429,
-          "time": 202.35895079064053
-        },
-        {
-          "energy": 43.476084455923655,
-          "time": 233.938202723397
-        },
-        {
-          "energy": 40.97843113959616,
-          "time": 265.9568907526563
-        }
-      ]
+      "url": "https://gist.githubusercontent.com/wd15/41e21ea1090057c42a59380d90367763/raw/eba1e44ec25a2d9a906b2c802596778892b2f676/hackathon_p2_sphere_IA_dfdt.csv"
     }
   ],
   "height": 300,
@@ -221,13 +127,13 @@
   "marks": [
     {
       "from": {
-        "data": "moose_1c_ia"
+        "data": "moose_2d_sta"
       },
       "properties": {
         "enter": {
           "stroke": {
             "scale": "color",
-            "value": "moose_1c_ia"
+            "value": "moose_2d_sta"
           },
           "strokeOpacity": {
             "value": 1.0
@@ -249,41 +155,13 @@
     },
     {
       "from": {
-        "data": "mmsp_1c_travis"
+        "data": "moose_2d_ia"
       },
       "properties": {
         "enter": {
           "stroke": {
             "scale": "color",
-            "value": "mmsp_1c_travis"
-          },
-          "strokeOpacity": {
-            "value": 1.0
-          },
-          "strokeWidth": {
-            "value": 2
-          },
-          "x": {
-            "field": "time",
-            "scale": "x"
-          },
-          "y": {
-            "field": "free_energy",
-            "scale": "y"
-          }
-        }
-      },
-      "type": "line"
-    },
-    {
-      "from": {
-        "data": "fipy_1c_travis"
-      },
-      "properties": {
-        "enter": {
-          "stroke": {
-            "scale": "color",
-            "value": "fipy_1c_travis"
+            "value": "moose_2d_ia"
           },
           "strokeOpacity": {
             "value": 1.0
@@ -327,9 +205,8 @@
     },
     {
       "domain": [
-        "moose_1c_ia",
-        "mmsp_1c_travis",
-        "fipy_1c_travis"
+        "moose_2d_sta",
+        "moose_2d_ia"
       ],
       "name": "color",
       "range": "category10",
