@@ -7,13 +7,13 @@
       "title": "Time",
       "type": "x",
       "values": [
+        0.1,
         1,
         10,
         100,
         1000,
         10000,
-        100000,
-        1000000
+        100000
       ]
     },
     {
@@ -23,9 +23,9 @@
       "title": "Free Energy",
       "type": "y",
       "values": [
-        10,
         100,
-        1000
+        1000,
+        10000
       ]
     },
     {
@@ -65,7 +65,7 @@
         }
       },
       "scale": "x",
-      "title": "Simulations for Benchmark 1d",
+      "title": "Simulations for Benchmark 2b",
       "type": "x",
       "values": []
     }
@@ -79,7 +79,7 @@
         },
         "type": "csv"
       },
-      "name": "moose_1d_sta",
+      "name": "moose_2b_sta",
       "transform": [
         {
           "expr": "datum.TotalEnergy",
@@ -87,15 +87,11 @@
           "type": "formula"
         },
         {
-          "test": "datum.time > 1.0",
-          "type": "filter"
-        },
-        {
-          "test": "datum.time < 1e6",
+          "test": "datum.time > 0.01",
           "type": "filter"
         }
       ],
-      "url": "https://gist.githubusercontent.com/wd15/41e21ea1090057c42a59380d90367763/raw/a211864b3269e86eb63db6f3dd9167ed18b92d08/hackathon_p1_sphere_STA.csv"
+      "url": "https://gist.githubusercontent.com/wd15/41e21ea1090057c42a59380d90367763/raw/eba1e44ec25a2d9a906b2c802596778892b2f676/hackathon_p2_NF_STA_dfdt.csv"
     },
     {
       "format": {
@@ -105,7 +101,7 @@
         },
         "type": "csv"
       },
-      "name": "moose_1d_ia",
+      "name": "moose_2b_ia",
       "transform": [
         {
           "expr": "datum.TotalEnergy",
@@ -113,15 +109,11 @@
           "type": "formula"
         },
         {
-          "test": "datum.time > 1",
-          "type": "filter"
-        },
-        {
-          "test": "datum.time < 1e6",
+          "test": "datum.time > 0.01",
           "type": "filter"
         }
       ],
-      "url": "https://gist.githubusercontent.com/wd15/41e21ea1090057c42a59380d90367763/raw/a211864b3269e86eb63db6f3dd9167ed18b92d08/hackathon_p1_sphere_IA.csv"
+      "url": "https://gist.githubusercontent.com/wd15/41e21ea1090057c42a59380d90367763/raw/eba1e44ec25a2d9a906b2c802596778892b2f676/hackathon_p2_NF_IA_dfdt.csv"
     }
   ],
   "height": 300,
@@ -134,13 +126,13 @@
   "marks": [
     {
       "from": {
-        "data": "moose_1d_sta"
+        "data": "moose_2b_sta"
       },
       "properties": {
         "enter": {
           "stroke": {
             "scale": "color",
-            "value": "moose_1d_sta"
+            "value": "moose_2b_sta"
           },
           "strokeOpacity": {
             "value": 1.0
@@ -162,13 +154,13 @@
     },
     {
       "from": {
-        "data": "moose_1d_ia"
+        "data": "moose_2b_ia"
       },
       "properties": {
         "enter": {
           "stroke": {
             "scale": "color",
-            "value": "moose_1d_ia"
+            "value": "moose_2b_ia"
           },
           "strokeOpacity": {
             "value": 1.0
@@ -192,8 +184,8 @@
   "scales": [
     {
       "domain": [
-        1,
-        1000000
+        0.1,
+        100000
       ],
       "name": "x",
       "nice": true,
@@ -202,8 +194,8 @@
     },
     {
       "domain": [
-        10,
-        1000
+        100,
+        10000
       ],
       "name": "y",
       "nice": true,
@@ -212,8 +204,8 @@
     },
     {
       "domain": [
-        "moose_1d_sta",
-        "moose_1d_ia"
+        "moose_2b_sta",
+        "moose_2b_ia"
       ],
       "name": "color",
       "range": "category10",
