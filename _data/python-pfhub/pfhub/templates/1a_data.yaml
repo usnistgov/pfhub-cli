@@ -1,0 +1,13 @@
+---
+- name: free_energy
+  url: '(data|free_energy).(json|tsv|csv)'
+  x_field: '[\S]*time[\S]*'
+  y_field: '[\S]*energy[\S]*'
+  type: line
+  schema:
+    type: file_timeseries
+    name: free_energy_1a.csv
+    format: csv
+    columns:
+      x: time
+      y: free_energy
