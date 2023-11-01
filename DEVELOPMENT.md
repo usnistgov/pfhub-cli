@@ -229,3 +229,24 @@ Nixpkgs version.
 > **NOTE**
 > Jekyll seems to be broken in Nixpkgs 23.05 so 22.11 is used for only
 > thi package. Hence why the flake depends on two versions of Nixpkgs.
+
+
+## Commit messages
+
+Use [convetional commits](). Use from the list of following values.
+
+```
+[
+  'build',
+  'chore',
+  'ci',
+  'docs',
+  'feat',
+  'fix',
+  'perf',
+  'refactor',
+  'revert',
+  'style',
+  'test'
+]
+```
