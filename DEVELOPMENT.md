@@ -250,3 +250,19 @@ Use [convetional commits](). Use from the list of following values.
   'test'
 ]
 ```
+
+## Poetry
+
+Install minimamba.
+
+Set up new environment
+
+Use
+ 
+    $ poetry install
+    
+to install the dependencies and install as a development package.
+
+
+
+
