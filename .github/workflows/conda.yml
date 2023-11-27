@@ -1,5 +1,5 @@
 ---
-name: Test PFHub With Conda
+name: Test Conda
 on: [push, pull_request]
 jobs:
   pfhub-conda-test:
