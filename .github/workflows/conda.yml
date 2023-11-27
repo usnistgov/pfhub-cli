@@ -15,7 +15,8 @@ jobs:
           environment-name: test-env
           create-args: >-
             python=3.10
-      - run: python setup.py install
+            poetry
+      - run: poetry install
       - run: py.test --nbval-lax --cov-fail-under=100
       - run: |
           mkdir -p tmp
