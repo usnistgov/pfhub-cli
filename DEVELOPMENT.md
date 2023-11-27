@@ -286,7 +286,7 @@ Follow these
 with
  
     $ eval "$(micromamba shell hook -s bash)"
-    $ micromamba create -n pfhub python=3.10
+    $ micromamba create -n pfhub python=3.10 poetry
     $ micromamba activate pfhub
     $ cd .../pypfhub
     $ poetry install
