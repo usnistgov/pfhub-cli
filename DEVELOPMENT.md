@@ -263,6 +263,56 @@ Use
     
 to install the dependencies and install as a development package.
 
+### Pushing to PyPI test
 
+See
+[this](https://stackoverflow.com/questions/68882603/using-python-poetry-to-publish-to-test-pypi-org).
+
+   $ poetry config repositories.test-pypi https://test.pypi.org/legacy/
+   $ poetry config pypi-token.pypi <TOKEN>
+   
+Nudge the version number in pyproject.toml to be the same as `python
+-c "import pfhub; print(pfhub.__version__)`. Versioneer doesn't work
+with Poetry.
+
+   $ poetry build
+   $ poetry publish -r test-pypi
+
+
+### Using Mamba from Nix
+
+Follow these
+[instructions](https://nixos.wiki/wiki/Python#micromamba). Configure
+with
+ 
+    $ eval "$(micromamba shell hook -s bash)"
+    $ micromamba create -n pfhub python=3.10
+    $ micromamba activate pfhub
+    $ cd .../pypfhub
+    $ poetry install
+    
+The PFHub CLI should be availabe
+
+    $ pfhub --help
+    Usage: pfhub [OPTIONS] COMMAND [ARGS]...
+    
+    
+### Building Nix installatioin using Poetry
+
+    $ poerty lock
+    $ poetry install
+    $ nix develop
+
+and then run with
+
+    $ pfhub --help
+    
+to create an environment, ro
+
+    $ nix run .#pfhub -- --help
+    
+to run the pfhub command line tool
+   
+   
 
 
