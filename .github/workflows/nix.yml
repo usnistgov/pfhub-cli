@@ -1,12 +1,12 @@
 ---
-name: Test PFHub Package
+name: Test Nix
 on: [push, pull_request]
 jobs:
   pfhub-nix-test:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./_data/python-pfhub
+        working-directory: .
     steps:
       - uses: actions/checkout@v3
       - uses: cachix/install-nix-action@v20
@@ -21,11 +21,10 @@ jobs:
           path: /run/user/${{ env.UID }}/http_cache.sqlite
           key: ${{ runner.os}}-http_cache.sqlite
       - run: nix develop --command bash -c "py.test --nbval-lax --cov-fail-under=100"
-      - run: nix develop --command bash -c "black --check setup.py pfhub"
-      - run: nix develop --command bash -c "pylint setup.py pfhub"
-      - run: nix develop --command bash -c "flake8 setup.py pfhub"
-      - run: nix develop --command bash -c "cd ../../results; make notebooks"
-      - run: nix develop --command bash -c "py.test --nbval-lax ../../results/benchmark*.ipynb"
+      - run: nix develop --command bash -c "black --check pfhub"
+      - run: nix develop --command bash -c "pylint pfhub"
+      - run: nix develop --command bash -c "flake8 pfhub"
+      - run: nix develop --command bash -c "pfhub test"        
       - uses: actions/cache/save@v3
         if: always()
         with:
