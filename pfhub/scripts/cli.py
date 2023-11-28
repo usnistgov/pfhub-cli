@@ -17,7 +17,7 @@ import requests
 import linkml.validators.jsonschemavalidator as validator
 
 from .. import test as pfhub_test
-from ..convert import meta_to_zenodo_no_zip, download_file
+from ..convert import meta_to_zenodo_no_zip, download_file, get_name
 from ..convert import download_zenodo as download_zenodo_
 from ..convert import download_meta as download_meta_
 from ..func import compact
@@ -87,6 +87,7 @@ def download(record, dest):
       dest: the destination directory
     """
     param, value = record
+
     if repr(param) == "STRING":
         regex = re.fullmatch(r".*10.5281/zenodo.(\d{1,})", value)
         if regex is None:
@@ -100,6 +101,7 @@ def download(record, dest):
             sys.exit(0)
     else:
         url = value
+
 
     try:
         is_meta = validate_old_url(url)
@@ -299,7 +301,9 @@ def validate_old_url(url):
       url: the url for the file
     """
     tmpdir = tempfile.mkdtemp()
-    file_path = download_file(url, dest=tmpdir)
+    name = get_name(url)
+    dest = os.path.join(tmpdir, name)
+    file_path = download_file(url, dest=dest)
     result = validate_old_(file_path)
     shutil.rmtree(tmpdir)
     return result

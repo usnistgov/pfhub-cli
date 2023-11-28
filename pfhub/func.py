@@ -171,6 +171,7 @@ def sep_help(format_, remove_whitespace=True):
     if format_ == "tsv":
         return "\t"
 
+    print('format_:', format_)
     raise RuntimeError(f"{format_} data format not supported")
 
 
