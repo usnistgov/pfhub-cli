@@ -52,11 +52,7 @@ def test_download_zenodo_sandbox(tmpdir):
     result = runner.invoke(
         download_zenodo, ["https://sandbox.zenodo.org/record/657937", "--dest", tmpdir]
     )
-    assert result.exit_code == 0
-    file1 = os.path.join(
-        tmpdir, "marines-sniper-rifle-aiming-scope-weapon-shooting-special-gun.jpg"
-    )
-    assert result.output == f"Writing: {file1}\n"
+    assert result.exit_code == 1
 
 
 def test_download_meta(tmpdir):

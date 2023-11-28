@@ -12,7 +12,7 @@ import urllib.parse
 
 import requests
 from dotwiz import DotWiz
-from toolz.curried import pipe, dissoc, groupby, get, merge, cons, pluck, get_in
+from toolz.curried import pipe, dissoc, groupby, get, merge, cons, pluck, get_in, juxt
 from toolz.curried import filter as filter_
 from toolz.curried import map as map_
 
@@ -26,6 +26,7 @@ from .func import (
     get_json,
     convert_date,
     write_files,
+    debug
 )
 from .zenodo import zenodo_to_meta
 
@@ -35,6 +36,7 @@ def download_meta(url, dest="./"):
 
     Args:
       url: path/url to meta file
+      dest: the destination directory
 
     Returns:
       list of files that have already been downloaded
@@ -55,8 +57,16 @@ def download_meta(url, dest="./"):
         filter_(lambda x: "url" in x.keys()),
         pluck("url"),
         cons(url),
-        map_(download_file(dest=dest)),
         list,
+        map_(lambda x: download_file(x, dest=os.path.join(dest, get_name(x)))),
+        list,
+    )
+
+## Get a filename from a URL
+get_name = sequence(
+    urllib.parse.urlparse,
+    lambda x: os.path.split(x.path),
+    get(1)
     )
 
 
@@ -83,29 +93,28 @@ def download_zenodo(record_id, sandbox=False, dest="./"):
         + record_id,
         get_json,
         get("files"),
-        map_(get_in(["links", "self"])),
-        map_(download_file(dest=dest)),
+        map_(juxt( get_in(["links", "self"]), get('key') )),
+        map_(lambda x: download_file(x[0], dest=os.path.join(dest, x[1]))),
         list,
     )
 
 
 @curry
-def download_file(url, dest="./"):
+def download_file(url, dest="./filename"):
     """Download a file and store in dest directory.
 
     Args:
       url: the url of the file
-      dest: the destination directory
+      dest: the destination path
 
     Returns:
       the path to the downloaded file
     """
-    urlparsed = urllib.parse.urlparse(url)
-    local_filepath = os.path.join(dest, os.path.split(urlparsed.path)[1])
     request = requests.get(url, allow_redirects=True, timeout=10)
-    with open(local_filepath, "wb") as fpointer:
+
+    with open(dest, "wb") as fpointer:
         fpointer.write(request.content)
-    return local_filepath
+    return dest
 
 
 def convert(url):
