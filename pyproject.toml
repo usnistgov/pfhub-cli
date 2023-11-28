@@ -47,6 +47,9 @@ dotwiz = "0.2.0"
 scipy = "^1.11.3"
 requests-cache = "^1.1.0"
 requests-mock = "^1.11.0"
+notebook = "*"
+ipykernel = "*"
+
 
 [tool.poetry.scripts]
 pfhub = "pfhub.scripts.cli:cli"
