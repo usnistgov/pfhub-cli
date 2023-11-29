@@ -29,24 +29,26 @@
         ) pypkgs-build-requirements
       );
 
-      pfhubenv = pkgs.poetry2nix.mkPoetryEnv {
-        editablePackageSources = {
-
-        };
+      args = {
         projectDir = ./.;
         preferWheels = true;
         overrides = p2n-overrides;
       };
-
-      pfhub = pkgs.poetry2nix.mkPoetryApplication {
-        projectDir = ./.;
-        preferWheels = true;
-        overrides = p2n-overrides;
-      };
+      env = pkgs.poetry2nix.mkPoetryEnv args;
+      app = pkgs.poetry2nix.mkPoetryApplication args;
    in
-     {
-       devShells.default = pfhubenv.env;
-       packages.pfhub = pfhub;
+     rec {
+       ## See https://github.com/nix-community/poetry2nix/issues/1433
+       ## It seems like poetry2nix does not seem to install as dev
+       ## environment
+       ## devShells.default = env.env;
+       devShells.default = pkgs.mkShell {
+         packages = [ env ];
+         shellHook = ''
+            export PYTHONPATH=$PWD
+         '';
+       };
+       packages.pfhub = app;
        packages.default = self.packages.${system}.pfhub;
       }
     )
