@@ -102,7 +102,6 @@ def download(record, dest):
     else:
         url = value
 
-
     try:
         is_meta = validate_old_url(url)
     except requests.exceptions.ConnectionError as err:

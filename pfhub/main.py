@@ -35,7 +35,6 @@ from .func import (
     get_data_from_yaml,
     concat_items,
     make_id,
-    read_yaml_from_url,
 )
 from .zenodo import zenodo_to_pfhub
 
@@ -71,9 +70,7 @@ def read_add_name(yaml_url):
     """
     matchzenodo = fullmatch(r"https://doi.org/\d{2}.\d{4}/zenodo.\d{7}")
     process = (
-        lambda x: yaml.safe_load(zenodo_to_pfhub(x))
-        if matchzenodo(x)
-        else read_yaml_from_url(x)
+        lambda x: yaml.safe_load(zenodo_to_pfhub(x)) if matchzenodo(x) else read_yaml(x)
     )
 
     return pipe(
@@ -105,7 +102,7 @@ def resolve_path(benchmark_path, url):
     """
     if url[:4] in ["http", "file"]:
         return url
-    return (pathlib.Path(benchmark_path).parent / url).as_uri()
+    return os.path.join(os.path.split(benchmark_path)[0], url)
 
 
 @curry
@@ -212,8 +209,9 @@ def get_table_data(benchmark_ids, benchmark_path=BENCHMARK_PATH):
     result2 code_name      2a.1 first last 2021-12-07  githubid
 
     """
-    to_datetime = lambda x: pandas.to_datetime(x, errors="raise", utc=True)
-    # format_date = lambda x: x.dt.strftime("%Y-%m-%d", format='mixed')
+    to_datetime = lambda x: pandas.to_datetime(
+        x, errors="raise", utc=True, format="mixed"
+    )
     format_date = lambda x: x.dt.strftime("%Y-%m-%d")
     return pipe(
         benchmark_ids,
@@ -371,6 +369,7 @@ def line_plot(
             log_x=get("log_x", layout, default=False),
             log_y=get("log_y", layout, default=False),
             range_y=get("range_y", layout, default=None),
+            render_mode="svg",
         ),
         do(
             lambda x: x.update_layout(

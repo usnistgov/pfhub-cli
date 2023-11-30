@@ -2,6 +2,7 @@
 """
 import pathlib
 import re
+from os.path import splitext
 
 from toolz.curried import get, get_in, pipe, curry, itemmap, assoc, groupby, juxt
 from toolz.curried import filter as filter_
@@ -9,9 +10,7 @@ from toolz.curried import map as map_
 from toolz.functoolz import memoize
 import pandas
 
-from .func import read_yaml, read_csv, sep_help, get_json, render, debug
-
-from os.path import splitext
+from .func import read_yaml, read_csv, sep_help, get_json, render
 
 
 def get_file_url(pattern, zenodo_json):
@@ -40,8 +39,8 @@ def get_file_url(pattern, zenodo_json):
         filter_(lambda x: re.fullmatch(pattern, x["key"].lower())),
         list,
         juxt(
-             get_in([0, "links", "self"]),
-             lambda x: splitext(get_in([0, 'key'], x))[1][1:]
+            get_in([0, "links", "self"]),
+            lambda x: splitext(get_in([0, "key"], x))[1][1:],
         ),
     )
 
@@ -134,9 +133,6 @@ def transform_data_item(zenodo_json, dat):
     """
     url, ext = get_file_url(dat["url"], zenodo_json)
     return transform(url, dat, ext)
-
-
-
 
 
 def read_and_transform_data(benchmark_id, zenodo_json):
