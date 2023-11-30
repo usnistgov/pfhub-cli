@@ -1,11 +1,8 @@
 
 [tool.pytest.ini_options]
 testpaths = ["pfhub", "notebooks"]
-addopts = "--doctest-modules --ignore=setup.py -r s --cov=pfhub/ --cov-report term-missing --no-cov-on-fail --cov-config .coveragerc --nbval --sanitize-with notebooks/sanitize.cfg"
+addopts = "--doctest-modules -r s --cov=pfhub/ --cov-report term-missing --no-cov-on-fail --cov-config .coveragerc --nbval --sanitize-with notebooks/sanitize.cfg"
 
-[tool.flake8]
-ignore = "E731, W503"
-max-line-length = "88"
 
 [tool.versioneer]
 vcs = "git"
@@ -47,8 +44,12 @@ dotwiz = "0.2.0"
 scipy = "^1.11.3"
 requests-cache = "^1.1.0"
 requests-mock = "^1.11.0"
-notebook = "*"
-ipykernel = "*"
+notebook = "^7.0.6"
+ipykernel = "^6.27.1"
+black = "^23.11.0"
+pylint = "^3.0.2"
+flake8 = "^6.1.0"
+flake8-pyproject = "^1.2.3"
 
 
 [tool.poetry.scripts]
@@ -58,3 +59,7 @@ pfhub = "pfhub.scripts.cli:cli"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.flake8]
+ignore = ['E731', 'W503']
+max-line-length = 88
