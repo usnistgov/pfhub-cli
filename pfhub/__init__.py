@@ -4,6 +4,7 @@ See the documentation at https://github.com/usnistgov/pfhub
 """
 
 import os
+import importlib.metadata
 
 
 def test(*args):  # pragma: no cover
@@ -37,4 +38,4 @@ def test(*args):  # pragma: no cover
     )
 
 
-__version__ = "0.2.0a2"
+__version__ = importlib.metadata.version(__package__ or __name__)
