@@ -1,16 +1,6 @@
-
 [tool.pytest.ini_options]
 testpaths = ["pfhub", "notebooks"]
 addopts = "--doctest-modules -r s --cov=pfhub/ --cov-report term-missing --no-cov-on-fail --cov-config .coveragerc --nbval --sanitize-with notebooks/sanitize.cfg"
-
-
-[tool.versioneer]
-vcs = "git"
-style = "pep440"
-versionfile_source = "pfhub/_version.py"
-versionfile_build = "pfhub/_version.py"
-tag_prefix = "v"
-parentdir_prefix = ""
 
 [tool.poetry]
 name = "pfhub"
