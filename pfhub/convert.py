@@ -26,7 +26,6 @@ from .func import (
     get_json,
     convert_date,
     write_files,
-    debug
 )
 from .zenodo import zenodo_to_meta
 
@@ -62,12 +61,9 @@ def download_meta(url, dest="./"):
         list,
     )
 
-## Get a filename from a URL
-get_name = sequence(
-    urllib.parse.urlparse,
-    lambda x: os.path.split(x.path),
-    get(1)
-    )
+
+# Get a filename from a URL
+get_name = sequence(urllib.parse.urlparse, lambda x: os.path.split(x.path), get(1))
 
 
 def download_zenodo(record_id, sandbox=False, dest="./"):
@@ -93,7 +89,7 @@ def download_zenodo(record_id, sandbox=False, dest="./"):
         + record_id,
         get_json,
         get("files"),
-        map_(juxt( get_in(["links", "self"]), get('key') )),
+        map_(juxt(get_in(["links", "self"]), get("key"))),
         map_(lambda x: download_file(x[0], dest=os.path.join(dest, x[1]))),
         list,
     )
