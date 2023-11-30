@@ -300,21 +300,6 @@ def render(template_name, sub_dict):
     return data
 
 
-def get_text(url):
-    """get the text from a url response
-
-    Results are cached
-
-    Args:
-      url: the url
-
-    Returns:
-      content.text
-    """
-    data = get_cached_session().get(url)
-    return "" if data.status_code == 400 else data.text
-
-
 @curry
 def get_data_from_yaml(data_names, keys, yaml_data):
     """Get data from a single meta.yaml

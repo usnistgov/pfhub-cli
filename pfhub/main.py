@@ -209,8 +209,7 @@ def get_table_data(benchmark_ids, benchmark_path=BENCHMARK_PATH):
     result2 code_name      2a.1 first last 2021-12-07  githubid
 
     """
-    to_datetime = lambda x: pandas.to_datetime(x, errors="raise", utc=True)
-    # format_date = lambda x: x.dt.strftime("%Y-%m-%d", format='mixed')
+    to_datetime = lambda x: pandas.to_datetime(x, errors="raise", utc=True, format="mixed")
     format_date = lambda x: x.dt.strftime("%Y-%m-%d")
     return pipe(
         benchmark_ids,

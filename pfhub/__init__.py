@@ -4,10 +4,9 @@ See the documentation at https://github.com/usnistgov/pfhub
 """
 
 import os
-from . import _version
 
 
-def test(*args):
+def test(*args):  # pragma: no cover
     r"""Run all the module tests.
 
     Equivalent to running ``py.test pfhub`` in the base
@@ -38,4 +37,4 @@ def test(*args):
     )
 
 
-__version__ = _version.get_versions()["version"]
+__version__ = "0.2.0a2"
