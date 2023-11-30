@@ -25,7 +25,17 @@ def test(*args):
     import pytest  # pylint: disable=import-outside-toplevel
 
     path = os.path.join(os.path.split(__file__)[0])
-    pytest.main(args=[path, "--doctest-modules", "-r s"] + list(args))
+    pytest.main(
+        args=[
+            path,
+            "--doctest-modules",
+            "-r s",
+            "--cov=pfhub/",
+            "--no-cov-on-fail",
+            "--cov-fail-under=100",
+        ]
+        + list(args)
+    )
 
 
 __version__ = _version.get_versions()["version"]

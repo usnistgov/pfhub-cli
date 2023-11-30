@@ -35,7 +35,6 @@ from .func import (
     get_data_from_yaml,
     concat_items,
     make_id,
-    read_yaml_from_url,
 )
 from .zenodo import zenodo_to_pfhub
 
@@ -71,9 +70,7 @@ def read_add_name(yaml_url):
     """
     matchzenodo = fullmatch(r"https://doi.org/\d{2}.\d{4}/zenodo.\d{7}")
     process = (
-        lambda x: yaml.safe_load(zenodo_to_pfhub(x))
-        if matchzenodo(x)
-        else read_yaml_from_url(x)
+        lambda x: yaml.safe_load(zenodo_to_pfhub(x)) if matchzenodo(x) else read_yaml(x)
     )
 
     return pipe(
@@ -105,7 +102,7 @@ def resolve_path(benchmark_path, url):
     """
     if url[:4] in ["http", "file"]:
         return url
-    return (pathlib.Path(benchmark_path).parent / url).as_uri()
+    return os.path.join(os.path.split(benchmark_path)[0], url)
 
 
 @curry
@@ -371,6 +368,7 @@ def line_plot(
             log_x=get("log_x", layout, default=False),
             log_y=get("log_y", layout, default=False),
             range_y=get("range_y", layout, default=None),
+            render_mode="svg",
         ),
         do(
             lambda x: x.update_layout(
