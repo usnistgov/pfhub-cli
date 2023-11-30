@@ -783,6 +783,20 @@ files = [
 ]
 
 [[package]]
+name = "dunamai"
+version = "1.19.0"
+description = "Dynamic version generation"
+optional = false
+python-versions = ">=3.5,<4.0"
+files = [
+    {file = "dunamai-1.19.0-py3-none-any.whl", hash = "sha256:1ed948676bbf0812bfaafe315a134634f8d6eb67138513c75aa66e747404b9c6"},
+    {file = "dunamai-1.19.0.tar.gz", hash = "sha256:6ad99ae34f7cd290550a2ef1305d2e0292e6e6b5b1b830dfc07ceb7fd35fec09"},
+]
+
+[package.dependencies]
+packaging = ">=20.9"
+
+[[package]]
 name = "et-xmlfile"
 version = "1.1.0"
 description = "An implementation of lxml.xmlfile for the standard library"
@@ -1289,18 +1303,18 @@ files = [
 
 [package.dependencies]
 attrs = ">=22.2.0"
-fqdn = {version = "*", optional = true, markers = "extra == \"format-nongpl\""}
-idna = {version = "*", optional = true, markers = "extra == \"format-nongpl\""}
-isoduration = {version = "*", optional = true, markers = "extra == \"format-nongpl\""}
-jsonpointer = {version = ">1.13", optional = true, markers = "extra == \"format-nongpl\""}
+fqdn = {version = "*", optional = true, markers = "extra == \"format\""}
+idna = {version = "*", optional = true, markers = "extra == \"format\""}
+isoduration = {version = "*", optional = true, markers = "extra == \"format\""}
+jsonpointer = {version = ">1.13", optional = true, markers = "extra == \"format\""}
 jsonschema-specifications = ">=2023.03.6"
 referencing = ">=0.28.4"
-rfc3339-validator = {version = "*", optional = true, markers = "extra == \"format-nongpl\""}
+rfc3339-validator = {version = "*", optional = true, markers = "extra == \"format\""}
 rfc3986-validator = {version = ">0.1.0", optional = true, markers = "extra == \"format-nongpl\""}
 rfc3987 = {version = "*", optional = true, markers = "extra == \"format\""}
 rpds-py = ">=0.7.1"
-uri-template = {version = "*", optional = true, markers = "extra == \"format-nongpl\""}
-webcolors = {version = ">=1.11", optional = true, markers = "extra == \"format-nongpl\""}
+uri-template = {version = "*", optional = true, markers = "extra == \"format\""}
+webcolors = {version = ">=1.11", optional = true, markers = "extra == \"format\""}
 
 [package.extras]
 format = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-validator", "rfc3987", "uri-template", "webcolors (>=1.11)"]
@@ -2135,6 +2149,25 @@ files = [
     {file = "ply-3.11-py2.py3-none-any.whl", hash = "sha256:096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce"},
     {file = "ply-3.11.tar.gz", hash = "sha256:00c7c1aaa88358b9c765b6d3000c6eec0ba42abca5351b095321aef446081da3"},
 ]
+
+[[package]]
+name = "poetry-dynamic-versioning"
+version = "1.1.1"
+description = "Plugin for Poetry to enable dynamic versioning based on VCS tags"
+optional = false
+python-versions = ">=3.7,<4.0"
+files = [
+    {file = "poetry_dynamic_versioning-1.1.1-py3-none-any.whl", hash = "sha256:c62127584be46613938595c309034775cbe4772b0b93740dbd70dcb90d8d1396"},
+    {file = "poetry_dynamic_versioning-1.1.1.tar.gz", hash = "sha256:514583297394bcb6ca5b3b0cdd831229b1fc95e0d21e24b9302b5d1a677aa4ee"},
+]
+
+[package.dependencies]
+dunamai = ">=1.18.0,<2.0.0"
+jinja2 = ">=2.11.1,<4"
+tomlkit = ">=0.4"
+
+[package.extras]
+plugin = ["poetry (>=1.2.0,<2.0.0)"]
 
 [[package]]
 name = "prefixcommons"
@@ -3853,4 +3886,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "63cbae5b1aad3c42f0c13ccc920a06e7754d5465a134c55238d09c5097d9d30d"
+content-hash = "1f7e6932527febd77a603c9fb25ed411eea33dad88bf6c86ec1866bd8ee9afae"
