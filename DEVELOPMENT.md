@@ -263,6 +263,10 @@ Use
     
 to install the dependencies and install as a development package.
 
+To add new packages use (don't edit `pyproject.toml` by hand).
+
+    $ poetry add package
+    
 ### Pushing to PyPI test
 
 See
