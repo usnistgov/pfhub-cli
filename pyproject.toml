@@ -4,7 +4,7 @@ addopts = "--doctest-modules -r s --cov=pfhub/ --cov-report term-missing --no-co
 
 [tool.poetry]
 name = "pfhub"
-version = "v0.2.0a2" ## Doesn't use versioneer correctly
+version = "0.0"
 description = "Phase Field Community Hub Python Module"
 authors = ["Daniel Wheeler <daniel.wheeler2@gmail.com>"]
 license = "LICENSE.md"
@@ -40,8 +40,7 @@ black = "^23.11.0"
 pylint = "^3.0.2"
 flake8 = "^6.1.0"
 flake8-pyproject = "^1.2.3"
-# poetry-dynamic-versioning = {extras = ["plugin"], version = "^1.1.1"}
-poetry-dynamic-versioning = "^1.1.1"
+versioneer = "^0.29"
 
 
 [tool.poetry.scripts]
@@ -51,16 +50,16 @@ pfhub = "pfhub.scripts.cli:cli"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-#requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
-#build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.flake8]
 ignore = ['E731', 'W503']
 max-line-length = 88
 
-[tool.poetry-dynamic-versioning]
-enable = true
-vcs = "git"
-style = "semver"
-format = "v{base}+{distance}.{commit}"
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "pfhub/_version.py"
+versionfile_build = "pfhub/_version.py"
+tag_prefix = "v"
+parentdir_prefix = ""
 
