@@ -3,8 +3,7 @@
 A Python module for both rendering and submitting [PFHub] phase field
 benchmark results using Jupyter, Pandas and Plotly.
 
-To view benchmark results go to the live website at <sup><strong><a
-href="https://pages.nist.gov/pfhub">pages.nist.gov/pfhub</a></sup></p>.
+To view benchmark results go to the live website at <sup><strong><a href="https://pages.nist.gov/pfhub">pages.nist.gov/pfhub</a></strong></sup>.
 
 ## Installation
 
@@ -25,7 +24,7 @@ for just the command line tool or
     $ nix develop github:wd15/pypfhub
     
 to generate an environment with Python and Jupyter available. See [the
-Nix section of the development guide](./DEVELOPMENT#flakes) to get
+Nix section of the development guide](./DEVELOPMENT.md#flakes) to get
 started with Nix.
 
 ## Usage
@@ -36,7 +35,7 @@ To test that the PFHub CLI is installed correctly use
 
     $ pfhub test
         
-### Submit a benchmark result to PFHub
+### Submit a benchmark result
 
 Under construction.
 
