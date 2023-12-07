@@ -3,7 +3,7 @@
 A Python module for both rendering and submitting [PFHub] phase field
 benchmark results using Jupyter, Pandas and Plotly.
 
-To view benchmark results go to the live website at <sup><strong><a href="https://pages.nist.gov/pfhub">pages.nist.gov/pfhub</a></strong></sup>.
+To view benchmark results go to the live website at <strong><a href="https://pages.nist.gov/pfhub">pages.nist.gov/pfhub</a></strong>
 
 ## Installation
 
