@@ -1,265 +1,252 @@
----
-title: "Development Guide"
-layout: essay
-comment: How to modify this site (beyond adding new simulations)
----
+# Development
 
-<p align="center">
-<a href="https://travis-ci.org/{{ site.links.repo }}" target="_blank">
-<img src="https://api.travis-ci.org/{{ site.links.repo }}.svg"
-     alt="Travis CI badge">
-</a>
-</p>
+    $ cachix use pfhub
+    $ nix develop
 
-<h4> Overview </h4>
+if Cachix is installed.
 
-The following guide is an overview on how to update the site for each
-particular element. Each page on this site is given by a combination of
-markdown files, .yaml files, and Jupyter notebooks. These files are converted
-to HTML using Jekyll, a static web page generator. The site is tested on
-[Travis CI](https://travis-ci.org/{{ site.links.repo }}) using
-[HTMLProofer][HTMLPROOFER], which automatically checks the site for
-errors. The [`.travis.yml`][TRAVISYML] file contains everything
-required to build the site. Note that if the instructions below and
-the [`.travis.yml`][TRAVISYML] are not synced then the build outlined
-in the [`travis.yml`][TRAVISYML] should be used. The main site is hosted on
-[pages.nist.gov](https://pages.nist.gov/pages-root/), which provides
-the [build.log]({{ site.links.live_url }}/build.log)
-for the Jekyll build.
+To open up an example notebook use
 
-Different aspects of this site can be edited using Google Forms, GitHub, or
-on your local machine. The list below gives which method should be used
-for various types of changes. Many of these tasks require that you have an
-account on [GitHub][GITHUB].
+    $ jupyter notebook
 
-***Update directly on GitHub***
+from within the nix development environment and navigate to
+`notebooks/test.ipynb`.
 
-- [Add yourself to the community page](#comm_page)
-- [Add a new phase field code](#new_code)
-- [Add a new workshop](#new_workshop)
-- [Add a new page](#new_page)
+### Push to Cachix
 
-***Update on your local machine***
+If Using Cachix
 
-- [How to build and view the site locally](#build_site)
-- [Update and build the Hexbin (hexagonal tiles of images on the homepage)](#build_hexbin)
-- [Add a Jupyter notebook](#new_notebook)
-- [Add a new benchmark problem](#new_problem)
-- [Test the HTML output](#test_html)
+    $ nix-env -iA cachix -f https://cachix.org/api/v1/install
+    $ cachix authtoken <TOKEN>
+    $ cachix use pfhub
+    $ nix develop --profile pfhub-profile -c true
+    $ cachix push pfhub pfhub-profile
 
-Detailed instructions for each of aspects of the site are given in the
-following sections.
 
-<h4> Update Directly on GitHub </h4>
+> **NOTE**
+> The `nix develop` command fails to change the shell prompt to indicate
+> that you are now in a Nix environment. To remedy this add the following
+> to your `~/.bashrc`.
+>
+> ```
+> show_nix_env() {
+>   if [[ -n "$IN_NIX_SHELL" ]]; then
+>     echo "(nix)"
+>   fi
+> }
+> export -f show_nix_env
+> export PS1="\[\e[1;34m\]\$(show_nix_env)\[\e[m\]"$PS1
+> ```
 
-Several common tasks can be accomplished on [GitHub][GITHUB] by
-editing files <a
-href="https://help.github.com/articles/creating-a-pull-request"
-data-proofer-ignore>in-place</a>.  Doing so will automatically fork
-the repository to your [GitHub][GITHUB] account and submit a pull
-request to update the [master GitHub repository]({{ site.links.github
-}}) with your content.
+## Using Cachix
 
-<h5> <a name="comm_page"></a>Update the Community Page </h5>
+The PFHub environment is uploaded as binaries to
+[Cachix](https://www.cachix.org/). Using Cachix can speed up the
+installation process when first running `nix develop`. To install
+Cachix use,
 
-To add a new entry to the communtiy page edit the
-[`community.yaml`]({{ site.links.github
-}}/blob/nist-pages/_data/community.yaml) file. The following fields
-need to be included for each entry.
+    $ nix-env -iA cachix -f https://cachix.org/api/v1/install
 
-    - name: Your name
-      text: A biographical sketch
-      email: Your email
-      home: Link to your home page
-      github_id: Your Github ID
-      twitter: Your Twitter handle
-      avatar: Link to your image
+and then
 
-Please also add other social media links beyond GitHub and Twitter
-that you'd like to include as well.
+    $ cachix use pfhub
+    $ nix develop
 
-<h5> <a name="new_code"></a>Add a New Phase Field Code </h5>
+to build the environment more rapidly. Note that this only helps on
+the first occasion that `nix develop` is executed. `nix develop`
+should be near instantaneous on subsequent runs regardless of whether
+Cachix is used.
 
-To add a new phase field code to the list of codes on the front page,
-follow the [submission instructions]({{ site.baseurl
-}}/submit_a_new_code) on the main site. [Jekyll][JEKYLL] will
-automatically rebuild the site after `codes.yaml` is edited.
+To upload a new PFHub environment to Cachix use
 
-<h5> <a name="new_workshop"></a>Add a New Workshop </h5>
+    $ cachix authtoken <TOKEN>  # get from cachix.org
+    $ nix develop --profile pfhub-profile -c true
+    $ cachix push pfhub pfhub-profile
 
-To add a new workshop edit the [`workshop.yaml`]({{ site.links.github
-}}/blob/nist-pages/_data/workshops.yaml) file. The following fields need to
-be included for each entry.
+## Update Flakes
 
-    - name: "Phase Field Methods Workshop I"
-      date: "Jan 9-10, 2015"
-      href: http://planitpurple.northwestern.edu/event/474167/xJDsFEfb
-      number: 1
-      contact: mailto:daniel.wheeler@nist.gov
-      description: >-
-        Workshop held at Northwestern University to discuss code
-        collaboration in phase field modelling.
-      icon_links:
-        - name: contact organizer
-          type: email
-          href: "mailto:daniel.wheeler@nist.gov?subject=First Phase Field Methods Workshop"
-        - name: Download PDF
-          type: file_download
-          href: "{{ site.baseurl }}/docs/CHiMaD_PhaseFieldWorkshop.pdf"
+The flake can be updated to have new package versions using first
 
-For each of the `icon_links`, the `type` field must correspond to a
-[Materialize icon](http://materializecss.com/icons.html).
+    $ nix flake lock --update-input pfhub
 
-<h5> <a name="new_page"></a>Add a New Page </h5>
+and then
 
-To add a new page create the page as a Markdown file directly on
-[GitHub]({{ site.links.github }}). For example, click "Create new
-file" on [GitHub]({{ site.links.github }}) called `my-page.md` and add
-the contents
+    $ nix flake update
+    $ nix develop
 
-    ---
-    layout: basic
-    ---
+The initial command is required since the base `flake.nix` depends on
+`_data/python-pfhub/flake.nix` and issues can occur if the dependency
+is not also updated. See [this issue on
+GitHub](https://github.com/NixOS/nix/issues/3978#issuecomment-1585001299).
 
-    # My Phase Field Page
+When the flake is updated, a new `flake.lock` file is generated which
+must be committed to the repository alongside the `flake.nix`. Note
+that the flake files depend on the `nixos-23.05` branch which is only
+updated with backports for bug fixes. To update to a newer version of
+Nixpkgs then the `flake.nix` file requires editing to point at a later
+Nixpkgs version.
 
-    Something about phase field ...
+> **NOTE**
+> Jekyll seems to be broken in Nixpkgs 23.05 so 22.11 is used for only
+> thi package. Hence why the flake depends on two versions of Nixpkgs.
 
-Submit a pull request on [GitHub]({{ site.links.github }}) and this
-page will appear under `.../{{ site.links.raw_name }}/my-page` after the
-pull-request is merged.
 
-<h4> Update on Your Local Machine </h4>
+# Install PFHub using Nix
 
-Some tasks involve adding new files or rebuilding existing ones. These
-are best done on your local machine, on a <a
-href="https://docs.github.com/en/get-started/quickstart/contributing-to-projects"
-data-proofer-ignore>clone of your fork </a>of the [master GitHub
-repository]({{ site.links.github }}).  You are encouraged to serve as
-local version of the site for testing before <a
-href="https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository"
-data-proofer-ignore>pushing your commits</a>and issuing a <a
-href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request"
-data-proofer-ignore>pull request</a>.
+## Installation
 
-<h5> <a name="build_site"></a>Build and Serve the Site </h5>
+PFHub is developed using [Nix](https://nixos.org/) and Nix is
+recommended for running and using the functionality that PFHub
+provides. Nix should be easy to install, but some problems can
+occur. Please raise an
+[issue](https://github.com/wd15/pfhub/issues/new?assignees=&labels=&projects=&template=blank.md)
+if the following isn't clear or you get stuck.
 
-The site uses the [Jekyll][JEKYLL] static web site generator. To build
-the environment required to serve the site, use the following
-commands.
+Here are some sites to help with installation.
 
-    $ sudo apt-get update
-    $ sudo apt-get install ruby nodejs
-    $ sudo gem install jekyll jekyll-coffeescript
+ - [Official download](https://nixos.org/download.html)
+ - [Official documentation](https://nix.dev/tutorials/install-nix)
+ - [Tutorial](https://nix-tutorial.gitlabpages.inria.fr/nix-tutorial/installation.html)
+ - [My own notes if paths are
+   missing](https://github.com/wd15/nixes/blob/master/NIX-NOTES.md)
+ - [Another tutorial](https://gricad.github.io/calcul/nix/tuto/2017/07/04/nix-tutorial.html#install-nix-single-user-mode)
 
-Then clone your fork of the GitHub repository.
+Once Nix is installed try it out with:
 
-    $ git clone https://github.com/your_GitHub_account/{{ site.links.raw_name }}.git
-    $ cd {{ site.links.raw_name }}
+    $ nix-env -i hello
+    installing 'hello-2.12.1'
+    $ ./hello
+    Hello, world!
+
+
+> **NOTE**
+> The [PFHub Dockerfile](./Dockerfile) installs Nix on Ubuntu
+> 22.04 so might be a place to consult to get paths and the like setup correctly.
+> See the [PFHub Docker usage instructions](./DOCKER.md).
+
+
+## Flakes
+
+The PFHub Nix expressions use an experimental feature known as flakes,
+see the [official flake documentation](https://nixos.wiki/wiki/Flakes).
+
+To enable Nix flakes, add a one liner to either
+`~/.config/nix/nix.conf` or `/etc/nix/nix.conf`. The one liner is
+
+```
+experimental-features = nix-command flakes
+```
+
+If you need more help consult [this
+tutorial](https://www.tweag.io/blog/2020-05-25-flakes/).
+
+To test that flakes are working try
+
+    $ nix flake metadata github:usnistgov/pfhub
+    Resolved URL:  github:usnistgov/pfhub
+    ...
+        └───systems: github:nix-systems/default/da67096a3b9bf56a91d16901293e51ba5b49a27e
+
+## Usage
+
+Assuming the above works adequately try
+
+    $ nix develop
+
+in the base of the PFHub working copy and then
+
     $ jekyll serve
 
-At this point [Jekyll][JEKYLL] should be serving the site. Go to
-<a href="http://localhost:4000/{{ site.links.raw_name }}/" data-proofer-ignore>
-<code class="highlighter-rouge">http://localhost:4000/{{ site.links.raw_name }}/</code>
-</a>
-or the link [Jekyll][JEKYLL] provides on the terminal, to view the
-site.
+to view the website locally.  At this point, you should be able to run
+all the functionality as outlined in the [testing
+workflow](.github/workflows/test-jekyll.yml).
+`nix develop` drops into a new environment with all the various
+packages availabe for running and using PFHub.
 
-<h5> <a name="build_hexbin"></a>Update and Build the Hexbin </h5>
+> **NOTE**
+> The `nix develop` command fails to change the shell prompt to indicate
+> that you are now in a Nix environment. To remedy this add the following
+> to your `~/.bashrc`.
+>
+> ```
+> show_nix_env() {
+>   if [[ -n "$IN_NIX_SHELL" ]]; then
+>     echo "(nix)"
+>   fi
+> }
+> export -f show_nix_env
+> export PS1="\[\e[1;34m\]\$(show_nix_env)\[\e[m\]"$PS1
+> ```
 
-To build the Hexbin, the tiled hexagonal images on the homepage, a Python environment is required. To setup the
-environment use [Conda][CONDA].
+## Using Cachix
 
-    $ wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-    $ bash miniconda.sh -b -p $HOME/miniconda
-    $ export PATH="$HOME/miniconda/bin:$PATH"
-    $ conda update conda
-    $ conda create -n test-environment python=3
+The PFHub environment is uploaded as binaries to
+[Cachix](https://www.cachix.org/). Using Cachix can speed up the
+installation process when first running `nix develop`. To install
+Cachix use,
 
-Create an environment with the required packages
+    $ nix-env -iA cachix -f https://cachix.org/api/v1/install
 
-    $ source activate test-environment
-    $ conda install -n test-environment pillow numpy
+and then
 
-Update the data in the [`hexbin.yaml`]({{ site.links.github
-}}/blob/nist-pages/_data/hexbin.yaml) file. The following format is
-used for each entry.
+    $ cachix use pfhub
+    $ nix develop
 
-    - image: http://www.mem.drexel.edu/ysun/files/density.png
-      url: http://www.mem.drexel.edu/ysun/Solidification.htm
-      title: Solidification Simulation
-      description: >-
-        Phase-Field Simulation of Solidification (Collaborator:
-        Prof. Christoph Beckermann, University of Iowa)
-The `url` field is the page that describes the image or the work
-associated with the image.  After updating rebuild the Hexbin.
+to build the environment more rapidly. Note that this only helps on
+the first occasion that `nix develop` is executed. `nix develop`
+should be near instantaneous on subsequent runs regardless of whether
+Cachix is used.
 
-    $ make hexbin
+To upload a new PFHub environment to Cachix use
 
-[Jekyll][JEKYLL] should automatically update the site.
+    $ cachix authtoken <TOKEN>  # get from cachix.org
+    $ nix develop --profile pfhub-profile -c true
+    $ cachix push pfhub pfhub-profile
 
-<h5> <a name="new_notebook"></a>Add a Jupyter Notebook </h5>
+## Update Flakes
 
-The benchmark specifications are built using Jupyter Notebooks. To render the
-notebooks as HTML, first generate the Python environment outlined
-above, and then install Jupyter.
+The flake can be updated to have new package versions using first
 
-    $ source activate test-environment
-    $ conda install -n test-environment jupyter
+    $ nix flake lock --update-input pfhub
 
-Make a new notebook or edit an existing one and then rebuild the
-notebook HTML.
+and then
 
-    $ make notebooks
+    $ nix flake update
+    $ nix develop
 
-This should automatically generate the HTML and [Jekyll][JEKYLL] will
-render it on the site. For example, a notebook in the base directory
-named `my_notebook.ipynb` will be rendered at
-`http://localhost:4000/{{ site.links.raw_name }}/my_notebook.ipynb`.
+The initial command is required since the base `flake.nix` depends on
+`_data/python-pfhub/flake.nix` and issues can occur if the dependency
+is not also updated. See [this issue on
+GitHub](https://github.com/NixOS/nix/issues/3978#issuecomment-1585001299).
 
-<h5> <a name="new_problem"></a>Add a New Benchmark Problem </h5>
+When the flake is updated, a new `flake.lock` file is generated which
+must be committed to the repository alongside the `flake.nix`. Note
+that the flake files depend on the `nixos-23.05` branch which is only
+updated with backports for bug fixes. To update to a newer version of
+Nixpkgs then the `flake.nix` file requires editing to point at a later
+Nixpkgs version.
 
-To add a new benchmark problem include a notebook describing the new
-problem and then link to it via the [`benchmarks.yaml`]({{
-site.links.github }}/blob/nist-pages/_data/benchmarks.yaml) file with
-the following fields.
+> **NOTE**
+> Jekyll seems to be broken in Nixpkgs 23.05 so 22.11 is used for only
+> thi package. Hence why the flake depends on two versions of Nixpkgs.
 
-    - title: Spinodal Decomposition
-      url: "benchmarks/benchmark1.ipynb/"
-      description: Test the diffusion of a solute in a matrix.
-      image: http://www.comsol.com/model/image/2054/big.png
 
-<h5> <a name="test_html"></a>Testing </h5>
+## Commit messages
 
-The site can be tested at the command line using
-[HTMLProofer][HTMLPROOFER]. This validates the generated HTML
-output. First install [HTMLProofer][HTMLPROOFER].
+Use [convetional commits](). Use from the list of following values.
 
-    $ sudo gem install html-proofer
-
-Make fresh builds of all the notebooks to check that they can be built.
-
-    $ find . -name "*.ipynb" -type f -not -path "*/.ipynb_checkpoints/*" -exec touch {} \;
-    $ make notebooks
-
-Make a fresh Hexbin to check its build process.
-
-    $ touch _data/hexbin.yaml
-    $ make hexbin
-
-Use [HTMLProofer][HTMLPROOFER] to check the site.
-
-    $ jekyll build -d ./_site/{{ site.links.raw_name }} && htmlproofer --allow-hash-href --empty-alt-ignore --checks-to-ignore ImageCheck ./_site
-
-Note that the images are not checked for valid HTML and for links as
-the images that are auto-generated by Jupyter which seems to break
-HTML guidelines (no alt tag for example). Also note that the rendered
-HTML needs to be written to `./_site/{{ site.links.raw_name }}` rather than
-`/_site` for [HTMLProofer][HTMLProofer] to check the internal links
-correctly.
-
-[TRAVISYML]: {{ site.links.github }}/blob/nist-pages/.travis.yml
-[CONDA]: http://conda.pydata.org/docs/index.html
-[JEKYLL]: https://jekyllrb.com
-[GITHUB]: https://github.com
-[HTMLPROOFER]: https://github.com/gjtorikian/html-proofer
+```
+[
+  'build',
+  'chore',
+  'ci',
+  'docs',
+  'feat',
+  'fix',
+  'perf',
+  'refactor',
+  'revert',
+  'style',
+  'test'
+]
+```
