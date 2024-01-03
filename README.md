@@ -20,15 +20,15 @@ ensure [Pip] is available. To install the PFHub CLI use,
 First install the [Nix package manager][NIX] and then enable [Flakes].
 To install the PFHub CLI use,
 
-    $ nix shell github:wd15/pypfhub
+    $ nix shell github:usnistgov/pfhub-cli
 
 for just the command line tool or
 
-    $ nix develop github:wd15/pypfhub
+    $ nix develop github:usnistgov/pfhub-cli
     
-to generate an environment with Python and Jupyter available.
-See [the Nix section of the development guide](./DEVELOPMENT.md#flakes)
-to get more help starting out with Nix
+to generate an environment with Python and Jupyter available.  See
+[the Nix section of the development guide](./DEVELOPMENT.md#flakes) to
+get more help starting out with Nix.
 
 ## Usage
 
