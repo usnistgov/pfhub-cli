@@ -17,14 +17,13 @@ To install Micromamba using Nix follow these
 Micromamba is installed via Nix's home-manager. Once installed the
 following environment can be generated.
 
- 
-    $ eval "$(micromamba shell hook -s bash)"
+    $ eval "$(micromamba shell hook -s ${SHELL})"
     $ micromamba create -n pfhub python=3.10 poetry
     $ micromamba activate pfhub
     $ cd .../pfhub-cli
-    
+
 Use
- 
+
     $ poetry install
     
 to install the dependencies and install as a development package.
@@ -38,18 +37,16 @@ To add new packages use (don't edit `pyproject.toml` by hand).
 
     $ poetry add package
     
-    
-### Building Nix installatioin using Poetry
+### Building Nix installation using Poetry
 
 The current Nix environment uses poetry2nix to build the
 environment. If the environment needs updating run
 
-
-    $ poerty lock
+    $ poetry lock
     $ poetry install
     
-first bofore running
-    
+first before running
+
     $ nix develop
 
 and then run the CLI with
@@ -68,7 +65,7 @@ To run the CLI directly use
 to indicate that you are now in a Nix environment. To remedy this add
 the following to your `~/.bashrc`.
 
-```
+``` bash
 show_nix_env() {
   if [[ -n "$IN_NIX_SHELL" ]]; then
     echo "(nix)"
@@ -86,7 +83,7 @@ see the [official flake documentation][flakes].
 To enable Nix flakes, add a one liner to either
 `~/.config/nix/nix.conf` or `/etc/nix/nix.conf`. The one liner is
 
-```
+``` text
 experimental-features = nix-command flakes
 ```
 
@@ -97,8 +94,8 @@ To test that flakes are working try
 
     $ nix flake metadata github:usnistgov/pfhub-cli
     Resolved URL:  github:usnistgov/pfhub-cli
-    ...
-        └───systems: github:nix-systems/default/da67096a3b9bf56a91d16901293e51ba5b49a27e
+    ⁞
+    └───systems: github:nix-systems/default/da67096a3b9bf56a91d16901293e51ba5b49a27e
 
 ### Update Flakes
 
@@ -117,45 +114,39 @@ Nixpkgs version.
 Use [conventional commits][conventional]. A commit message should look
 like
 
-```
-<type>[optional scope]: <description>
+    <type>[optional scope]: <description>
 
-[optional body]
+    [optional body]
 
-[optional footer]
-```
+    [optional footer]
 
-where the type is from the following list
+where the `type` is one of the following:
 
-```
-[
-  'build',
-  'chore',
-  'ci',
-  'docs',
-  'feat',
-  'fix',
-  'perf',
-  'refactor',
-  'revert',
-  'style',
-  'test'
-]
-```
-    
+- `build` — build system configuration
+- `chore` — tedious work
+- `ci` — continuous integration configuration
+- `docs` — documentation edits
+- `feat` — adding or modifying a feature
+- `fix` — fixing a bug
+- `perf` — performance improvements
+- `refactor` — refactoring a chunk of code
+- `revert` — undo a previous commit
+- `style` — stylistic changes
+- `test` — test system configuration
+
 ### Pushing to PyPI test
 
-See this [Stackoverflow question][pypi-test] for some help.
+See this [StackOverflow question][pypi-test] for some help.
 
 Configure with
 
-   $ poetry config repositories.test-pypi https://test.pypi.org/legacy/
-   $ poetry config pypi-token.pypi <TOKEN>
+    $ poetry config repositories.test-pypi https://test.pypi.org/legacy/
+    $ poetry config pypi-token.pypi <TOKEN>
    
-To publish use
+To publish, use
 
-   $ poetry build
-   $ poetry publish -r test-pypi
+    $ poetry build
+    $ poetry publish -r test-pypi
    
 [nix.dev]: https://nix.dev
 [micromamba-nix]: https://nixos.wiki/wiki/Python#micromamba

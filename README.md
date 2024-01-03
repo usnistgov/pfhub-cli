@@ -1,9 +1,10 @@
 # PFHub CLI
 
-A Python module for both rendering and submitting [PFHub] phase field
+A Python module for both rendering and submitting [PFHub] phase-field
 benchmark results using Jupyter, Pandas and Plotly.
 
-To view benchmark results go to the live website at <strong><a href="https://pages.nist.gov/pfhub">pages.nist.gov/pfhub</a></strong>
+To view benchmark results go to the live website at 
+[__pages.nist.gov/pfhub__](https://pages.nist.gov/pfhub).
 
 ## Installation
 
@@ -12,7 +13,7 @@ To view benchmark results go to the live website at <strong><a href="https://pag
 First install a Python environment manager such as [Micromamba] and
 ensure [Pip] is available. To install the PFHub CLI use,
 
-    $ pip install git+https://github.com/usnistgov/pypfhub.git
+    $ pip install git+https://github.com/usnistgov/pfhub-cli.git
     
 ### Using Nix
 
@@ -20,14 +21,14 @@ First install the [Nix package manager][NIX] and then enable [Flakes].
 To install the PFHub CLI use,
 
     $ nix shell github:wd15/pypfhub
-    
+
 for just the command line tool or
 
     $ nix develop github:wd15/pypfhub
     
-to generate an environment with Python and Jupyter available. See [the
-Nix section of the development guide](./DEVELOPMENT.md#flakes) to get more help
-starting out with Nix
+to generate an environment with Python and Jupyter available.
+See [the Nix section of the development guide](./DEVELOPMENT.md#flakes)
+to get more help starting out with Nix
 
 ## Usage
 
