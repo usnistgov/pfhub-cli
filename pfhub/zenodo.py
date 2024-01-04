@@ -2,8 +2,9 @@
 """
 import pathlib
 import re
+from os.path import splitext
 
-from toolz.curried import get, get_in, pipe, curry, itemmap, assoc, groupby
+from toolz.curried import get, get_in, pipe, curry, itemmap, assoc, groupby, juxt
 from toolz.curried import filter as filter_
 from toolz.curried import map as map_
 from toolz.functoolz import memoize
@@ -28,7 +29,7 @@ def get_file_url(pattern, zenodo_json):
     ...          links=dict(self="https://zenodo/file/wow_blah.txt"))
     ... ])
 
-    >>> get_file_url(r"wow\S+.txt", zenodo_json)
+    >>> get_file_url(r"wow\S+.txt", zenodo_json)[0]
     'https://zenodo/file/wow_blah.txt'
 
     """
@@ -37,7 +38,10 @@ def get_file_url(pattern, zenodo_json):
         get("files"),
         filter_(lambda x: re.fullmatch(pattern, x["key"].lower())),
         list,
-        get_in([0, "links", "self"]),
+        juxt(
+            get_in([0, "links", "self"]),
+            lambda x: splitext(get_in([0, "key"], x))[1][1:],
+        ),
     )
 
 
@@ -76,12 +80,13 @@ def get_col_names(url, ext_type):
     return read_csv(sep_help(ext_type), url).columns
 
 
-def transform(url, dat):
+def transform(url, dat, ext_type):
     r"""Fill out a template data item.
 
     Args:
       url: the URL to the data file (normally a CSV file)
       dat: the data item dictionary
+      ext_type: csv for example
 
     Returns:
       a transformed data item dictionary
@@ -93,7 +98,7 @@ def transform(url, dat):
     ... )
 
     >>> from pprint import pp
-    >>> pp(transform(getfixture("free_energy_csv"), dat))  # doctest:+ELLIPSIS
+    >>> pp(transform(getfixture("free_energy_csv"), dat, 'csv'))  # doctest:+ELLIPSIS
     {'name': 'free_energy',
      'x_field': 'time',
      'y_field': 'free_energy',
@@ -101,8 +106,6 @@ def transform(url, dat):
      'ext_type': 'csv'}
 
     """
-
-    ext_type = pathlib.Path(url).suffix[1:]
     select_col_name = lambda kv: (
         kv[0],
         match_col_name(get_col_names(url, ext_type), *kv),
@@ -128,7 +131,8 @@ def transform_data_item(zenodo_json, dat):
     Returns
       a transformed data item dictionary
     """
-    return transform(get_file_url(dat["url"], zenodo_json), dat)
+    url, ext = get_file_url(dat["url"], zenodo_json)
+    return transform(url, dat, ext)
 
 
 def read_and_transform_data(benchmark_id, zenodo_json):
@@ -254,7 +258,7 @@ def zenodo_to_pfhub(url):
         pathlib.Path,
         lambda x: "https://zenodo.org/api/records/" + x.name.split(".")[1],
         get_json,
-        lambda x: render_meta(get_json(get_file_url("pfhub.json", x)), x),
+        lambda x: render_meta(get_json(get_file_url("pfhub.json", x)[0]), x),
     )
 
 
