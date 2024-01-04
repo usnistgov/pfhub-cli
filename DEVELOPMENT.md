@@ -12,10 +12,9 @@ is to generate an environment using Micromamba.
 ### Using Mamba from Nix
 
 To install Micromamba using Nix follow these
-[instructions][micromamba-nix]. This seems to work very well with Nix
-(much better than Conda which is a real mess). In the following
-Micromamba is installed via Nix's home-manager. Once installed the
-following environment can be generated.
+[instructions][micromamba-nix]. This seems to work very well with Nix.
+In the following Micromamba is installed via Nix's home-manager.
+Once installed the following environment can be generated.
 
     $ eval "$(micromamba shell hook -s ${SHELL})"
     $ micromamba create -n pfhub python=3.10 poetry
