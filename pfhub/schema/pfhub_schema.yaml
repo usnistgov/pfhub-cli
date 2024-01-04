@@ -300,7 +300,7 @@ slots:
   time_in_s:
     description: >-
       Amount of time required to execute the simulation.
-    range: integer
+    range: float
     required: true
     slot_uri: https://schema.org/Number
     unit:
