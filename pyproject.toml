@@ -41,6 +41,7 @@ pylint = "^3.0.2"
 flake8 = "^6.1.0"
 flake8-pyproject = "^1.2.3"
 versioneer = "^0.29"
+zenodo-client = "^0.3.2"
 
 
 [tool.poetry.scripts]
