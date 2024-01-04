@@ -134,12 +134,16 @@ def read_yaml(filepath):
     >>> print(data['benchmark']['id'])
     1a
     """  # pylint: disable=line-too-long # noqa: E501
+    matchfile = fullmatch(r"file:///[\S]+")
     if urllib.parse.urlparse(str(filepath)).scheme in ("http", "https"):
         session = get_cached_session()
         with io.StringIO(
             session.get(filepath).content.decode("utf-8"), newline=None
         ) as stream:
             data = yaml.safe_load(stream)
+    elif matchfile(str(filepath)):
+        with urllib.request.urlopen(filepath) as fpointer:
+            return yaml.safe_load(fpointer)
     else:
         with open(filepath, encoding="utf-8") as stream:
             data = yaml.safe_load(stream)
@@ -294,49 +298,6 @@ def render(template_name, sub_dict):
         data = chevron.render(fstream, sub_dict)
 
     return data
-
-
-def get_text(url):
-    """get the text from a url response
-
-    Results are cached
-
-    Args:
-      url: the url
-
-    Returns:
-      content.text
-    """
-    data = get_cached_session().get(url)
-    return "" if data.status_code == 400 else data.text
-
-
-def read_yaml_from_url(url):
-    """Read a YAML file from a URL
-
-    Args:
-      url: the URL
-
-    Returns:
-      contents of the YAML file
-
-    Just returns empty string with broken URL
-
-    >>> import requests_mock
-    >>> url = "http://test.com"
-    >>> with requests_mock.Mocker() as m:
-    ...     _ = m.get(url, text="---\\na: 1")
-    ...     read_yaml_from_url(url)
-    ...
-    {'a': 1}
-
-    """
-    matchfile = fullmatch(r"file:///[\S]+")
-    if matchfile(url):
-        with urllib.request.urlopen(url) as fpointer:
-            return yaml.safe_load(fpointer)
-    else:
-        return yaml.safe_load(get_text(url))
 
 
 @curry

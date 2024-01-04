@@ -1,0 +1,65 @@
+[tool.pytest.ini_options]
+testpaths = ["pfhub", "notebooks"]
+addopts = "--doctest-modules -r s --cov=pfhub/ --cov-report term-missing --no-cov-on-fail --cov-config .coveragerc --nbval --sanitize-with notebooks/sanitize.cfg"
+
+[tool.poetry]
+name = "pfhub"
+version = "0.0"
+description = "Phase Field Community Hub Python Module"
+authors = ["Daniel Wheeler <daniel.wheeler2@gmail.com>"]
+license = "LICENSE.md"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+numpy = "^1.26.1"
+pytest = "^7.4.3"
+toolz = "^0.12.0"
+pyyaml = "^6.0.1"
+plotly = "^5.18.0"
+pytest-cov = "^4.1.0"
+click = "^8.1.7"
+chevron = "^0.14.0"
+jinja2 = "^3.1.2"
+itables = "^1.6.2"
+click-params = "^0.4.1"
+pykwalify = "^1.8.0"
+ruamel-yaml = "0.17.21"
+requests = "^2.31.0"
+linkml = "^1.6.2"
+pydantic = "1.10.13"
+pandas = "^2.1.2"
+nbval = "^0.10.0"
+dotwiz = "0.2.0"
+scipy = "^1.11.3"
+requests-cache = "^1.1.0"
+requests-mock = "^1.11.0"
+notebook = "^7.0.6"
+ipykernel = "^6.27.1"
+black = "^23.11.0"
+pylint = "^3.0.2"
+flake8 = "^6.1.0"
+flake8-pyproject = "^1.2.3"
+versioneer = "^0.29"
+
+
+[tool.poetry.scripts]
+pfhub = "pfhub.scripts.cli:cli"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.flake8]
+ignore = ['E731', 'W503']
+max-line-length = 88
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "pfhub/_version.py"
+versionfile_build = "pfhub/_version.py"
+tag_prefix = "v"
+parentdir_prefix = ""
+
