@@ -315,7 +315,7 @@ def get_file_strings(meta_yaml):
       meta_yaml: wizdot version of meta.yaml
 
     Returns:
-      a dictionary of files and contents for wring to disk including
+      a dictionary of files and contents for writing to disk including
       the pfhub.yaml and necessary data files
 
     >>> yaml_file = str(getfixture('yaml_data_file'))
@@ -406,7 +406,7 @@ def render_pfhub_schema(data, time_data, memory_data, timeseries):
         {
             "problem": data.benchmark.id,
             "benchmark_version": data.benchmark.version,
-            "summary": data.metadata.summary,
+            "summary": data.metadata.summary.encode('unicode_escape'),
             "contributors": [
                 {
                     "id": "github:" + data.metadata.author.github_id,
