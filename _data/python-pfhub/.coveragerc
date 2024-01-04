@@ -1,4 +1,0 @@
-[run]
-omit =
-    pfhub/__init__.py
-    pfhub/_version.py
