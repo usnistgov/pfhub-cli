@@ -376,7 +376,7 @@ def compact(items):
 
 
 def read_vega_data(keys, data):
-    """Read vega data given keys to exract
+    """Read vega data given keys to extract
 
     Read a vega data block given the keys (or columns) to extract
 
