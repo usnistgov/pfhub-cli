@@ -12,39 +12,25 @@ from pprint import pprint
 import pathlib
 
 
-def upload_to_zenodo(path):
+def upload_to_zenodo(path, sandbox):
+    return ensure_zenodo_(
+        pathlib.Path(path).resolve(),
+        sandbox=sandbox
+    ).json()['links']['html']
 
 
-    resolved_path = pathlib.Path(path).resolve()
-
-
-    print(get_creators(resolved_path))
-    data = Metadata(
-        title='PFHub Upload',
-        upload_type='dataset',
-        description= get_summary(resolved_path),
-        creators = get_creators(resolved_path),
-    #     creators=[
-    #     Creator(
-    #         name='Danie Wheeler',
-    #         affiliation='Harvard Medical School',
-    #         orcid='0000-0003-4423-4370',
-    #     ),
-    # ],
-
-    )
-
-
-    res = ensure_zenodo(
-        key=str(uuid.uuid4()), #.strip('-'),  # this is a unique key you pick that will be used to store
-                      # the numeric deposition ID on your local system's cache
-        data=data,
+def ensure_zenodo_(resolved_path, sandbox=True):
+    return ensure_zenodo(
+        key=str(uuid.uuid4()),
+        data=Metadata(
+            title='PFHub Upload',
+            upload_type='dataset',
+            description= get_summary(resolved_path),
+            creators = get_creators(resolved_path)
+        ),
         paths=[str(resolved_path)] + get_data_paths(resolved_path),
-        sandbox=True,  # remove this when you're ready to upload to real Zenodo
+        sandbox=sandbox,
     )
-
-    return res.json()['links']['html']
-
 
 
 def get_data_paths(resolved_path):
@@ -70,12 +56,14 @@ def get_creators(resolved_path):
         list
     )
 
+
 def get_creator(contributor):
     print(contributor.affiliation)
     return Creator(
         name=contributor.name,
         affiliation=get_in(['affiliation', 0], None),
     )
+
 
 def get_summary(resolved_path):
     return pipe(

@@ -46,7 +46,7 @@ def cli():
 def download_zenodo(url, dest):
     """Download a Zenodo record
 
-    Works with any Zenodo link
+    Works with any Zenodo linkj
 
     Args:
       url: the URL of either a meta.yaml or Zenodo record
@@ -235,16 +235,19 @@ def test():  # pragma: no cover
 
 
 @cli.command(epilog=EPILOG)
-@click.option(
-    "--path",
-    "-p",
-    help="Upload a set of files to Zenodo",
-    type=click.Path(exists=True, readable=True, file_okay=True, dir_okay=False),
-    default="./",
+@click.argument(
+    "file_path",
+    type=click.Path(exists=True, dir_okay=False, readable=True),
+    default="./pfhub.yaml"
 )
-def upload(path):  # pylint: disable=unused-argument
+@click.option(
+    "--sandbox/--no-sandbox",
+    default=True
+)
+def upload(file_path, sandbox):  # pylint: disable=unused-argument
     """Upload PFHub data to Zenodo"""
-    url = upload_to_zenodo(path)
+    print('sandbox:', sandbox)
+    url = upload_to_zenodo(file_path, sandbox)
     click.secho(message=f"Uploaded to {url}", fg="green")
 
 
