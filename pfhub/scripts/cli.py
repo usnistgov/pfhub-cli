@@ -46,7 +46,7 @@ def cli():
 def download_zenodo(url, dest):
     """Download a Zenodo record
 
-    Works with any Zenodo linkj
+    Works with any Zenodo link
 
     Args:
       url: the URL of either a meta.yaml or Zenodo record
