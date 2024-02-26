@@ -1,5 +1,7 @@
 # PFHub CLI
 
+## Overview
+
 A Python module for both rendering and submitting [PFHub] phase-field
 benchmark results using Jupyter, Pandas and Plotly.
 
@@ -27,7 +29,7 @@ for just the command line tool or
     $ nix develop github:usnistgov/pfhub-cli
     
 to generate an environment with Python and Jupyter available.  See
-[the Nix section of the development guide](./DEVELOPMENT.md#flakes) to
+[the Nix section of the development guide](./DEVELOPMENT.md#nix-shell-prompt) to
 get more help starting out with Nix.
 
 ## Usage
@@ -37,7 +39,10 @@ get more help starting out with Nix.
 To test that the PFHub CLI is installed correctly use
 
     $ pfhub test
-        
+
+A single test will fail if `ZENODO_SANDBOX_API_TOKEN` is not set, see
+the [development guide](./DEVELOPMENT.md#setting-up-zenodo_client).
+
 ### Submit a benchmark result
 
 Under construction.

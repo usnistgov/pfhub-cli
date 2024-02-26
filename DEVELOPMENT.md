@@ -152,3 +152,27 @@ To publish, use
 [flakes]: https://nixos.wiki/wiki/Flakes
 [conventional]: https://www.conventionalcommits.org
 [pypi-test]: https://stackoverflow.com/questions/68882603/using-python-poetry-to-publish-to-test-pypi-org
+
+### Deploying the docs
+
+Use
+
+    $ mkdocs gh-deploy --remote-branch nist-pages --remote-name upstream
+
+when in the nix development environment. This will build the docs and
+push to the `nist-pages` branch in the upstream repository.
+
+### Setting up zenodo_client
+
+See https://pypi.org/project/zenodo-client/
+
+Add the the sandbox and zenodo api tokens to `~/.config/zenodo.ini`.
+
+```
+[zenodo]
+sandbox_api_token = XXX
+api_token = YYY
+```
+
+Alternatively, set either the `ZENODO_API_TOKEN` or the `ZENODO_SANDBOX_API_TOKEN` as
+an environment variable.
