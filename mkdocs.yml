@@ -1,0 +1,67 @@
+site_name: PFHub CLI
+site_url: https://example.com/
+repo_url: https://github.com/usnistgov/pfhub-cli
+
+theme:
+  name: material
+  palette:
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  
+nav:
+  - Home: index.md
+  # - Tutorial: tutorial.md
+  - "How-to Guide":
+    - "Test Notebook include": notebooks/test
+    # - "Upload Data to Zenodo": upload-zenodo.md
+    # - "Submit a Benchmark Result": test
+    # - "Generate Data": generate.md
+    # - "Generate a pfhub.yaml": pfhub-yaml.md
+  # - Background: background.md        
+  - API: api.md
+  - Development: development.md
+
+markdown_extensions:
+  - pymdownx.snippets:
+      check_paths: true
+  - toc:
+      permalink: "¶"
+      
+plugins:
+  - mkdocs-jupyter:
+      execute: true
+      allow_errors: false
+      include_requirejs: true
+      ignore: [".ipynb_checkpoints/*.ipynb"]
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            docstring_section_style: list
+            # heading_level: 1
+            inherited_members: true
+            merge_init_into_class: true
+            separate_signature: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_signature_annotations: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            signature_crossrefs: true
+            summary: true
+            parameter_headings: true
+
+extra_css:
+  - extra.css
