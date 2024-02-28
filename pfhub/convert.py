@@ -406,7 +406,7 @@ def render_pfhub_schema(data, time_data, memory_data, timeseries):
         {
             "problem": data.benchmark.id,
             "benchmark_version": data.benchmark.version,
-            "summary": data.metadata.summary.encode('unicode_escape'),
+            "summary": data.metadata.summary.encode("unicode_escape"),
             "contributors": [
                 {
                     "id": "github:" + data.metadata.author.github_id,
