@@ -1,8 +1,11 @@
 ---
-name: Test Nix
-on: [push, pull_request]
+name: Docs
+on:
+  push:
+    branches:
+      - main
 jobs:
-  pfhub-nix-test:
+  deploy-docs:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -20,15 +23,9 @@ jobs:
         with:
           path: /run/user/${{ env.UID }}/http_cache.sqlite
           key: ${{ runner.os}}-http_cache.sqlite
-      - env:
-          ZENODO_SANDBOX_API_TOKEN: ${{ secrets.ZENODO_SANDBOX_API_TOKEN }}
-        run: nix develop --command bash -c "py.test --nbval-lax --cov-fail-under=100"
-      - run: nix develop --command bash -c "black --check pfhub"
-      - run: nix develop --command bash -c "pylint pfhub"
-      - run: nix develop --command bash -c "flake8 pfhub"
-      - run: nix develop --command bash -c "pfhub test"        
+      - run: nix develop --command bash -c "mkdocs gh-deploy --clean --verbose --remote-branch nist-pages"
       - uses: actions/cache/save@v3
         if: always()
         with:
           path: /run/user/${{ env.UID }}/http_cache.sqlite
-          key: ${{ runner.os}}-http_cache.sqlite
+          key: ${{ runner.os }}-http_cache.sqlite
