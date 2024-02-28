@@ -1,0 +1,42 @@
+---
+id: https://github.com/usnistgov/FiPy-spinodal-decomposition-benchmark/tree/master/periodic/
+benchmark_problem: 1a.1
+
+date_created: '2017-01-10'
+
+schema:
+  url: >-
+    https://github.com/usnistgov/pfhub-schema/tree/2b06531/project
+
+summary: >-
+  Serial Travis CI benchmark with FiPy, periodic domain
+
+contributors:
+  - id: github:tkphd
+    name: Trevor Keller
+    affiliation: []
+    email: trevor.keller@nist.gov
+
+framework:
+  - url: https://github.com/usnistgov/FiPy-spinodal-decomposition-benchmark/tree/master/periodic/
+    name: fipy
+    download: https://github.com/usnistgov/FiPy-spinodal-decomposition-benchmark/tree/master/periodic/
+    version: "0.0"
+
+implementation:
+  url: >-
+    https://github.com/usnistgov/FiPy-spinodal-decomposition-benchmark/tree/master/periodic/
+
+results:
+  dataset_temporal:
+    - name: free_energy_1a.csv
+      columns:
+        - time
+        - free_energy
+  hardware:
+    architecture: x86_64
+    cores: 1
+    nodes: 1
+  fictive_time: 52.746625481564735
+  memory_in_kb: 470976
+  time_in_s: 1495.47
