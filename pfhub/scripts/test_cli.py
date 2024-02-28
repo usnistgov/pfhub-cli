@@ -2,6 +2,7 @@
 """
 
 import os
+import re
 
 from click.testing import CliRunner
 
@@ -13,6 +14,7 @@ from .cli import (
     validate,
     validate_old,
     convert_to_old,
+    upload,
 )
 
 
@@ -225,3 +227,16 @@ def test_convert_to_old_missing_file():
     result = runner.invoke(convert_to_old, [yaml_path])
     assert result.exit_code == 1
     assert result.output.splitlines()[-1] == f"{yaml_path} is not valid"
+
+
+def test_upload_to_zenodo():
+    """Test upload to Zenodo"""
+    runner = CliRunner()
+    base = os.path.split(__file__)[0]
+    yaml_path = os.path.join(base, "..", "test_data", "pfhub.yaml")
+    result = runner.invoke(upload, [yaml_path, "--sandbox"])
+    assert result.exit_code == 0
+    assert re.fullmatch(
+        r"Uploaded to https://sandbox.zenodo.org/records/\d+",
+        result.output.splitlines()[-1],
+    )
