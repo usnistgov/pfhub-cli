@@ -152,3 +152,12 @@ To publish, use
 [flakes]: https://nixos.wiki/wiki/Flakes
 [conventional]: https://www.conventionalcommits.org
 [pypi-test]: https://stackoverflow.com/questions/68882603/using-python-poetry-to-publish-to-test-pypi-org
+
+### Deploying documentation
+
+Use
+
+    $ mkdocs gh-deploy --remote-branch nist-pages --remote-name upstream
+
+when in the nix development environment. This will build the docs and
+push to the `nist-pages` branch in the upstream repository.
