@@ -238,15 +238,11 @@ def test():  # pragma: no cover
 @click.argument(
     "file_path",
     type=click.Path(exists=True, dir_okay=False, readable=True),
-    default="./pfhub.yaml"
+    default="./pfhub.yaml",
 )
-@click.option(
-    "--sandbox/--no-sandbox",
-    default=True
-)
+@click.option("--sandbox/--no-sandbox", default=True)
 def upload(file_path, sandbox):  # pylint: disable=unused-argument
     """Upload PFHub data to Zenodo"""
-    print('sandbox:', sandbox)
     url = upload_to_zenodo(file_path, sandbox)
     click.secho(message=f"Uploaded to {url}", fg="green")
 
