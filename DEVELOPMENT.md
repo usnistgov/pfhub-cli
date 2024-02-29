@@ -153,7 +153,7 @@ To publish, use
 [conventional]: https://www.conventionalcommits.org
 [pypi-test]: https://stackoverflow.com/questions/68882603/using-python-poetry-to-publish-to-test-pypi-org
 
-### Deploying documentation
+### Deploying the docs
 
 Use
 
@@ -161,3 +161,17 @@ Use
 
 when in the nix development environment. This will build the docs and
 push to the `nist-pages` branch in the upstream repository.
+
+### Setting up zenodo_client
+
+See https://pypi.org/project/zenodo-client/
+
+Add the the sandbox and zenodo api tokens to `~/.config/zenodo.ini`.
+
+```
+[zenodo]
+sandbox_api_token = XXX
+api_token = YYY
+```
+
+or add `ZENODO_API_TOKEN` as an environment variable.
