@@ -21,7 +21,7 @@ jobs:
           path: /run/user/${{ env.UID }}/http_cache.sqlite
           key: ${{ runner.os}}-http_cache.sqlite
       - env:
-          ZENODO_API_TOKEN: ${{ secrets.ZENODO_API_TOKEN }}
+          ZENODO_SANDBOX_API_TOKEN: ${{ secrets.ZENODO_API_TOKEN }}
         run: nix develop --command bash -c "py.test --nbval-lax --cov-fail-under=100"
       - run: nix develop --command bash -c "black --check pfhub"
       - run: nix develop --command bash -c "pylint pfhub"
