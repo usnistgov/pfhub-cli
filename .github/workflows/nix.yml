@@ -1,6 +1,6 @@
 ---
 name: Test Nix
-on: [push, pull_request_target]
+on: [push, pull_request]
 jobs:
   pfhub-nix-test:
     runs-on: ubuntu-latest
