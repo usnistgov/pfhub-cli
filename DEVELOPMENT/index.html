@@ -1,0 +1,827 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://example.com/DEVELOPMENT/">
+      
+      
+        <link rel="prev" href="../api/">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.6">
+    
+    
+      
+        <title>Development - PFHub CLI</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#development" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="PFHub CLI" class="md-header__button md-logo" aria-label="PFHub CLI" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PFHub CLI
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Development
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/usnistgov/pfhub-cli" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="PFHub CLI" class="md-nav__button md-logo" aria-label="PFHub CLI" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    PFHub CLI
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/usnistgov/pfhub-cli" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    How-to Guide
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            How-to Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/test" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Test Notebook include
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Development
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Development
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-mamba-from-nix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Mamba from Nix
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-nix-installation-using-poetry" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building Nix installation using Poetry
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-odds-and-ends" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional odds and ends
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Additional odds and ends">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nix-shell-prompt" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nix Shell Prompt
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flakes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-flakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Update Flakes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commit-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Commit messages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pushing-to-pypi-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pushing to PyPI test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploying-the-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploying the docs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-up-zenodo_client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up zenodo_client
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-mamba-from-nix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Mamba from Nix
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-nix-installation-using-poetry" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building Nix installation using Poetry
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-odds-and-ends" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional odds and ends
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Additional odds and ends">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nix-shell-prompt" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nix Shell Prompt
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flakes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-flakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Update Flakes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commit-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Commit messages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pushing-to-pypi-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pushing to PyPI test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploying-the-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploying the docs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-up-zenodo_client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up zenodo_client
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="development">Development<a class="headerlink" href="#development" title="Permanent link">¶</a></h1>
+<p>PFHub CLI is developed using Nix. Conda / Mamba / Micromamba will also
+work just fine. See the <a href="https://nix.dev">nix.dev</a> to get started with Nix.</p>
+<h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">¶</a></h2>
+<p>Poetry is used to generate the development environment. The flake.nix
+then uses poetry2nix to generate the Nix environment. The first step
+is to generate an environment using Micromamba.</p>
+<h3 id="using-mamba-from-nix">Using Mamba from Nix<a class="headerlink" href="#using-mamba-from-nix" title="Permanent link">¶</a></h3>
+<p>To install Micromamba using Nix follow these
+<a href="https://nixos.wiki/wiki/Python#micromamba">instructions</a>. This seems to work very well with Nix.
+In the following Micromamba is installed via Nix's home-manager.
+Once installed the following environment can be generated.</p>
+<pre><code>$ eval "$(micromamba shell hook -s ${SHELL})"
+$ micromamba create -n pfhub python=3.10 poetry
+$ micromamba activate pfhub
+$ cd .../pfhub-cli
+</code></pre>
+<p>Use</p>
+<pre><code>$ poetry install
+</code></pre>
+<p>to install the dependencies and install as a development package.</p>
+<p>The PFHub CLI should be available</p>
+<pre><code>$ pfhub --help
+Usage: pfhub [OPTIONS] COMMAND [ARGS]...
+</code></pre>
+<p>To add new packages use (don't edit <code>pyproject.toml</code> by hand).</p>
+<pre><code>$ poetry add package
+</code></pre>
+<h3 id="building-nix-installation-using-poetry">Building Nix installation using Poetry<a class="headerlink" href="#building-nix-installation-using-poetry" title="Permanent link">¶</a></h3>
+<p>The current Nix environment uses poetry2nix to build the
+environment. If the environment needs updating run</p>
+<pre><code>$ poetry lock
+$ poetry install
+</code></pre>
+<p>first before running</p>
+<pre><code>$ nix develop
+</code></pre>
+<p>and then run the CLI with</p>
+<pre><code>$ pfhub --help
+</code></pre>
+<p>To run the CLI directly use</p>
+<pre><code>$ nix run .#pfhub -- --help
+</code></pre>
+<h2 id="additional-odds-and-ends">Additional odds and ends<a class="headerlink" href="#additional-odds-and-ends" title="Permanent link">¶</a></h2>
+<h3 id="nix-shell-prompt">Nix Shell Prompt<a class="headerlink" href="#nix-shell-prompt" title="Permanent link">¶</a></h3>
+<p><strong>NOTE</strong>: the <code>nix develop</code> command fails to change the shell prompt
+to indicate that you are now in a Nix environment. To remedy this add
+the following to your <code>~/.bashrc</code>.</p>
+<pre><code class="language-bash">show_nix_env() {
+  if [[ -n &quot;$IN_NIX_SHELL&quot; ]]; then
+    echo &quot;(nix)&quot;
+  fi
+}
+export -f show_nix_env
+export PS1=&quot;\[\e[1;34m\]\$(show_nix_env)\[\e[m\]&quot;$PS1
+</code></pre>
+<h3 id="flakes">Flakes<a class="headerlink" href="#flakes" title="Permanent link">¶</a></h3>
+<p>The PFHub Nix expressions use an experimental feature known as flakes,
+see the <a href="https://nixos.wiki/wiki/Flakes">official flake documentation</a>.</p>
+<p>To enable Nix flakes, add a one liner to either
+<code>~/.config/nix/nix.conf</code> or <code>/etc/nix/nix.conf</code>. The one liner is</p>
+<pre><code class="language-text">experimental-features = nix-command flakes
+</code></pre>
+<p>If you need more help consult <a href="https://www.tweag.io/blog/2020-05-25-flakes/">this
+tutorial</a>.</p>
+<p>To test that flakes are working try</p>
+<pre><code>$ nix flake metadata github:usnistgov/pfhub-cli
+Resolved URL:  github:usnistgov/pfhub-cli
+⁞
+└───systems: github:nix-systems/default/da67096a3b9bf56a91d16901293e51ba5b49a27e
+</code></pre>
+<h3 id="update-flakes">Update Flakes<a class="headerlink" href="#update-flakes" title="Permanent link">¶</a></h3>
+<pre><code>$ nix flake update
+$ nix develop
+</code></pre>
+<p>When the flake is updated, a new <code>flake.lock</code> file is generated which
+must be committed to the repository alongside the <code>flake.nix</code>. Note
+that the flake files depend on the <code>nixos-23.05</code> branch which is only
+updated with backports for bug fixes. To update to a newer version of
+Nixpkgs then the <code>flake.nix</code> file requires editing to point at a later
+Nixpkgs version.</p>
+<h3 id="commit-messages">Commit messages<a class="headerlink" href="#commit-messages" title="Permanent link">¶</a></h3>
+<p>Use <a href="https://www.conventionalcommits.org">conventional commits</a>. A commit message should look
+like</p>
+<pre><code>&lt;type&gt;[optional scope]: &lt;description&gt;
+
+[optional body]
+
+[optional footer]
+</code></pre>
+<p>where the <code>type</code> is one of the following:</p>
+<ul>
+<li><code>build</code> — build system configuration</li>
+<li><code>chore</code> — tedious work</li>
+<li><code>ci</code> — continuous integration configuration</li>
+<li><code>docs</code> — documentation edits</li>
+<li><code>feat</code> — adding or modifying a feature</li>
+<li><code>fix</code> — fixing a bug</li>
+<li><code>perf</code> — performance improvements</li>
+<li><code>refactor</code> — refactoring a chunk of code</li>
+<li><code>revert</code> — undo a previous commit</li>
+<li><code>style</code> — stylistic changes</li>
+<li><code>test</code> — test system configuration</li>
+</ul>
+<h3 id="pushing-to-pypi-test">Pushing to PyPI test<a class="headerlink" href="#pushing-to-pypi-test" title="Permanent link">¶</a></h3>
+<p>See this <a href="https://stackoverflow.com/questions/68882603/using-python-poetry-to-publish-to-test-pypi-org">StackOverflow question</a> for some help.</p>
+<p>Configure with</p>
+<pre><code>$ poetry config repositories.test-pypi https://test.pypi.org/legacy/
+$ poetry config pypi-token.pypi &lt;TOKEN&gt;
+</code></pre>
+<p>To publish, use</p>
+<pre><code>$ poetry build
+$ poetry publish -r test-pypi
+</code></pre>
+<h3 id="deploying-the-docs">Deploying the docs<a class="headerlink" href="#deploying-the-docs" title="Permanent link">¶</a></h3>
+<p>Use</p>
+<pre><code>$ mkdocs gh-deploy --remote-branch nist-pages --remote-name upstream
+</code></pre>
+<p>when in the nix development environment. This will build the docs and
+push to the <code>nist-pages</code> branch in the upstream repository.</p>
+<h3 id="setting-up-zenodo_client">Setting up zenodo_client<a class="headerlink" href="#setting-up-zenodo_client" title="Permanent link">¶</a></h3>
+<p>See https://pypi.org/project/zenodo-client/</p>
+<p>Add the the sandbox and zenodo api tokens to <code>~/.config/zenodo.ini</code>.</p>
+<pre><code>[zenodo]
+sandbox_api_token = XXX
+api_token = YYY
+</code></pre>
+<p>Alternatively, set either the <code>ZENODO_API_TOKEN</code> or the <code>ZENODO_SANDBOX_API_TOKEN</code> as
+an environment variable.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e1c3ead8.min.js"></script>
+      
+    
+  </body>
+</html>

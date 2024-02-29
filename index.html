@@ -465,7 +465,7 @@
   
   
     <li class="md-nav__item">
-      <a href="development/" class="md-nav__link">
+      <a href="DEVELOPMENT/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -645,17 +645,19 @@ To install the PFHub CLI use,</p>
 <pre><code>$ nix develop github:usnistgov/pfhub-cli
 </code></pre>
 <p>to generate an environment with Python and Jupyter available.  See
-<a href="./DEVELOPMENT.md#nix-shell-prompt">the Nix section of the development guide</a> to
+<a href="DEVELOPMENT/#nix-shell-prompt">the Nix section of the development guide</a> to
 get more help starting out with Nix.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">¶</a></h2>
 <h3 id="test">Test<a class="headerlink" href="#test" title="Permanent link">¶</a></h3>
 <p>To test that the PFHub CLI is installed correctly use</p>
 <pre><code>$ pfhub test
 </code></pre>
+<p>A single test will fail if <code>ZENODO_SANDBOX_API_TOKEN</code> is not set, see
+the <a href="DEVELOPMENT/#setting-up-zenodo_client">development guide</a>.</p>
 <h3 id="submit-a-benchmark-result">Submit a benchmark result<a class="headerlink" href="#submit-a-benchmark-result" title="Permanent link">¶</a></h3>
 <p>Under construction.</p>
 <h2 id="contributions">Contributions<a class="headerlink" href="#contributions" title="Permanent link">¶</a></h2>
-<p>Contributions are welcome. See the <a href="./DEVELOPMENT.md">development guide</a> to get
+<p>Contributions are welcome. See the <a href="DEVELOPMENT/">development guide</a> to get
 started.</p>
 <h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">¶</a></h2>
 <p>See the <a href="./LICENSE.md">NIST license</a></p>
