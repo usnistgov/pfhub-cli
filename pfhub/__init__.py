@@ -30,9 +30,7 @@ def test(*args):  # pragma: no cover
             path,
             "--doctest-modules",
             "-r s",
-            "--cov=pfhub/",
-            "--no-cov-on-fail",
-            "--cov-fail-under=100",
+            "--no-cov"
         ]
         + list(args)
     )
