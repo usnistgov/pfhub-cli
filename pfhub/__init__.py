@@ -25,15 +25,7 @@ def test(*args):  # pragma: no cover
     import pytest  # pylint: disable=import-outside-toplevel
 
     path = os.path.join(os.path.split(__file__)[0])
-    pytest.main(
-        args=[
-            path,
-            "--doctest-modules",
-            "-r s",
-            "--no-cov"
-        ]
-        + list(args)
-    )
+    pytest.main(args=[path, "--doctest-modules", "-r s", "--no-cov"] + list(args))
 
 
 __version__ = _version.get_versions()["version"]
