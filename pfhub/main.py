@@ -387,13 +387,16 @@ def line_plot(
 def levelset_plot(
     data, layout=None, columns=("x", "y", "z"), mask_func=lambda x: slice(len(x))
 ):
-    """Generate a Plotly level set plot
+    r"""Generate a Plotly level set plot
 
     Args:
       data: extracted data as a data frame
       layout: dictionary with "x", "y" and "title" keys to customize the plot
       mask_func: function to apply to remove values (helps to reduce memory usage)
 
+    Example:
+
+    ```
     >>> x, y = np.mgrid[-1:1:10j, -1:1:10j]
     >>> x = x.flatten()
     >>> y = y.flatten()
@@ -416,6 +419,7 @@ def levelset_plot(
                    'yaxis': {'range': [-1, 1], 'scaleanchor': 'x', 'scaleratio': 1}}
     })
 
+    ```
     """
     if layout is None:
         layout = {}
