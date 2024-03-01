@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.6">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.12">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.50c56a3b.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e359304.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -241,10 +241,8 @@
     
     
     
-    
     <li class="md-nav__item md-nav__item--nested">
       
-        
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
@@ -466,9 +464,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setting-up-zenodo_client" class="md-nav__link">
+  <a href="#setting-up-zenodo" class="md-nav__link">
     <span class="md-ellipsis">
-      Setting up zenodo_client
+      Setting up Zenodo
     </span>
   </a>
   
@@ -611,9 +609,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setting-up-zenodo_client" class="md-nav__link">
+  <a href="#setting-up-zenodo" class="md-nav__link">
     <span class="md-ellipsis">
-      Setting up zenodo_client
+      Setting up Zenodo
     </span>
   </a>
   
@@ -762,15 +760,45 @@ $ poetry publish -r test-pypi
 </code></pre>
 <p>when in the nix development environment. This will build the docs and
 push to the <code>nist-pages</code> branch in the upstream repository.</p>
-<h3 id="setting-up-zenodo_client">Setting up zenodo_client<a class="headerlink" href="#setting-up-zenodo_client" title="Permanent link">¶</a></h3>
-<p>See https://pypi.org/project/zenodo-client/</p>
-<p>Add the the sandbox and zenodo api tokens to <code>~/.config/zenodo.ini</code>.</p>
+<h3 id="setting-up-zenodo">Setting up Zenodo<a class="headerlink" href="#setting-up-zenodo" title="Permanent link">¶</a></h3>
+<p>It's best to start testing uploads using Zenodo Sandbox before using
+the main Zenodo repository. See <a href="https://pypi.org/project/zenodo-client/">the zenodo-client
+documentation</a> for more
+details, but the following steps should work:</p>
+<ul>
+<li>
+<p>Create an account with Zenodo sandbox at
+   <a href="https://sandbox.zenodo.org/signup/">https://sandbox.zenodo.org/signup/</a>.</p>
+</li>
+<li>
+<p>Generate a Zenodo token from
+   <a href="https://sandbox.zenodo.org/account/settings/applications/">https://sandbox.zenodo.org/account/settings/applications/</a>
+   under "Applications" &gt; "Personal Access Tokens". Select
+   "deposits:actions", "deposits:write" and "user:email" when
+   generating the token.</p>
+</li>
+<li>
+<p>Copy the token and set the <code>ZENODO_SANDBOX_API_TOKEN</code> environment
+   variable using the token or add the token to <code>~/.config/zenodo.ini</code>
+   so that it looks like</p>
+</li>
+</ul>
 <pre><code>[zenodo]
 sandbox_api_token = XXX
-api_token = YYY
+
 </code></pre>
-<p>Alternatively, set either the <code>ZENODO_API_TOKEN</code> or the <code>ZENODO_SANDBOX_API_TOKEN</code> as
-an environment variable.</p>
+<ul>
+<li>Test using the PFHub CLI to upload data to Zenodo Sandbox. Use
+   <code>pfhub upload pfhub.yaml --sandbox</code> to do this. Sample data is
+   available here
+   <a href="https://github.com/usnistgov/pfhub-cli/tree/main/pfhub/test_data">here</a>.</li>
+</ul>
+<p><strong>NOTE</strong>: logging into Zenodo's sandbox can be difficult with ORCID
+and is probably easier with a GitHub ID.</p>
+<p>To use the main Zenodo repository (not sandbox), follow the same
+instructions as above, but use the main Zenodo site. Set the
+<code>ZENODO_API_TOKEN</code> or add the <code>api_token = XXX</code> to
+<code>~/.config/zenodo.ini</code>.</p>
 
 
 
@@ -820,7 +848,7 @@ an environment variable.</p>
     <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.e1c3ead8.min.js"></script>
+      <script src="../assets/javascripts/bundle.c8d2eff1.min.js"></script>
       
     
   </body>

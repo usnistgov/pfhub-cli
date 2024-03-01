@@ -11,6 +11,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://example.com/LICENSE/</loc>
+         <lastmod>1980-01-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://example.com/api/</loc>
          <lastmod>1980-01-01</lastmod>
          <changefreq>daily</changefreq>
