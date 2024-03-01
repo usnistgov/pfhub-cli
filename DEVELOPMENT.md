@@ -162,17 +162,45 @@ Use
 when in the nix development environment. This will build the docs and
 push to the `nist-pages` branch in the upstream repository.
 
-### Setting up zenodo_client
 
-See https://pypi.org/project/zenodo-client/
 
-Add the the sandbox and zenodo api tokens to `~/.config/zenodo.ini`.
+### Setting up Zenodo
+
+It's best to start testing uploads using Zenodo Sandbox before using
+the main Zenodo repository. See [the zenodo-client
+documentation](https://pypi.org/project/zenodo-client/) for more
+details, but the following steps should work:
+
+ - Create an account with Zenodo sandbox at
+   [https://sandbox.zenodo.org/signup/](https://sandbox.zenodo.org/signup/).
+   
+ - Generate a Zenodo token from
+   [https://sandbox.zenodo.org/account/settings/applications/](https://sandbox.zenodo.org/account/settings/applications/)
+   under "Applications" > "Personal Access Tokens". Select
+   "deposits:actions", "deposits:write" and "user:email" when
+   generating the token.
+   
+ - Copy the token and set the `ZENODO_SANDBOX_API_TOKEN` environment
+   variable using the token or add the token to `~/.config/zenodo.ini`
+   so that it looks like
 
 ```
 [zenodo]
 sandbox_api_token = XXX
-api_token = YYY
+
 ```
 
-Alternatively, set either the `ZENODO_API_TOKEN` or the `ZENODO_SANDBOX_API_TOKEN` as
-an environment variable.
+ - Test using the PFHub CLI to upload data to Zenodo Sandbox. Use
+   `pfhub upload pfhub.yaml --sandbox` to do this. Sample data is
+   available here
+   [here](https://github.com/usnistgov/pfhub-cli/tree/main/pfhub/test_data).
+ 
+ 
+**NOTE**: logging into Zenodo's sandbox can be difficult with ORCID
+and is probably easier with a GitHub ID.
+
+To use the main Zenodo repository (not sandbox), follow the same
+instructions as above, but use the main Zenodo site. Set the
+`ZENODO_API_TOKEN` or add the `api_token = XXX` to
+`~/.config/zenodo.ini`.
+

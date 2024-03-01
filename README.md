@@ -41,7 +41,7 @@ To test that the PFHub CLI is installed correctly use
     $ pfhub test
 
 A single test will fail if `ZENODO_SANDBOX_API_TOKEN` is not set, see
-the [development guide](./DEVELOPMENT.md#setting-up-zenodo_client).
+the [development guide](./DEVELOPMENT.md#setting-up-zenodo).
 
 ### Submit a benchmark result
 
