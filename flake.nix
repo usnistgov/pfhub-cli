@@ -19,6 +19,8 @@
         url-normalize = [ "poetry-core" ];
         cfgraph = [ "setuptools" ];
         pytest-logging = [ "setuptools" ];
+        mkdocs-windmill = [ "setuptools" ];
+        paginate = [ "setuptools" ];
       };
 
       p2n-overrides = pkgs.poetry2nix.defaultPoetryOverrides.extend (self: super:

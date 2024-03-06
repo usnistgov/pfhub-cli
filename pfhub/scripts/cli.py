@@ -22,6 +22,7 @@ from ..convert import download_zenodo as download_zenodo_
 from ..convert import download_meta as download_meta_
 from ..func import compact
 from ..new_to_old import to_old
+from ..upload import upload_to_zenodo
 
 
 EPILOG = "See the documentation at \
@@ -234,15 +235,16 @@ def test():  # pragma: no cover
 
 
 @cli.command(epilog=EPILOG)
-@click.option(
-    "--path",
-    "-p",
-    help="Upload a set of files to Zenodo",
-    type=click.Path(exists=True, readable=True, file_okay=False),
-    default="./",
+@click.argument(
+    "file_path",
+    type=click.Path(exists=True, dir_okay=False, readable=True),
+    default="./pfhub.yaml",
 )
-def upload(path):  # pylint: disable=unused-argument
+@click.option("--sandbox/--no-sandbox", default=True)
+def upload(file_path, sandbox):  # pylint: disable=unused-argument
     """Upload PFHub data to Zenodo"""
+    url = upload_to_zenodo(file_path, sandbox)
+    click.secho(message=f"Uploaded to {url}", fg="green")
 
 
 @cli.command(epilog=EPILOG)

@@ -17,7 +17,9 @@ jobs:
             python=3.10
             poetry
       - run: poetry install
-      - run: py.test --nbval-lax --cov-fail-under=100
+      - env:
+          ZENODO_SANDBOX_API_TOKEN: ${{ secrets.ZENODO_SANDBOX_API_TOKEN }}
+        run: py.test --nbval-lax --cov-fail-under=100
       - run: |
           mkdir -p tmp
           cd tmp
