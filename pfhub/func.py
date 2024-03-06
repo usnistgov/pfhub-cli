@@ -1,5 +1,6 @@
 """Functions used by other modules
 """
+
 from functools import wraps
 from urllib.error import HTTPError, URLError
 import logging
@@ -93,10 +94,20 @@ def maybe(func):
 
 
 def get_cached_session():
-    """Get the cached session"""
+    """Get the requests cached session
+
+    Use `session.cache.clear()` to empty the cache.
+    """
     return CachedSession(
         expire_after=timedelta(days=30), backend="sqlite", use_temp=True
     )
+
+
+def clear_cache():
+    """Clear the requests cached data
+    """
+    session = get_cached_session()
+    session.cache.clear()
 
 
 def sequence(*args):

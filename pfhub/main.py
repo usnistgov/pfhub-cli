@@ -69,16 +69,18 @@ def read_add_name(yaml_url):
 
     """
     matchzenodo = fullmatch(r"https://doi.org/\d{2}.\d{4}/zenodo.\d{7}")
-    process = (
-        lambda x: yaml.safe_load(zenodo_to_pfhub(x)) if matchzenodo(x) else read_yaml(x)
+    process = lambda x: (
+        yaml.safe_load(zenodo_to_pfhub(x)) if matchzenodo(x) else read_yaml(x)
     )
 
     return pipe(
         yaml_url,
         process,
-        lambda x: x
-        if "name" in x
-        else assoc(x, "name", os.path.split(os.path.split(yaml_url)[0])[1]),
+        lambda x: (
+            x
+            if "name" in x
+            else assoc(x, "name", os.path.split(os.path.split(yaml_url)[0])[1])
+        ),
     )
 
 

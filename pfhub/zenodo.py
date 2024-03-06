@@ -1,5 +1,6 @@
 """Download and convert a Zenodo DOI to a PFHub meta.yaml string
 """
+
 import pathlib
 import re
 from os.path import splitext

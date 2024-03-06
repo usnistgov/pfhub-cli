@@ -15,6 +15,7 @@ from .cli import (
     validate_old,
     convert_to_old,
     upload,
+    generate_notebook,
 )
 
 
@@ -240,3 +241,14 @@ def test_upload_to_zenodo():
         r"Uploaded to https://sandbox.zenodo.org/records/\d+",
         result.output.splitlines()[-1],
     )
+
+
+def test_generate_notebook(tmpdir):
+    """Test generate-notebook"""
+    runner = CliRunner()
+    result = runner.invoke(generate_notebook, ["1a.1", "--dest", tmpdir])
+    assert result.exit_code == 0
+    result = runner.invoke(
+        generate_notebook, ["1a.1", "--dest", tmpdir, "--clear-cache"]
+    )
+    assert result.exit_code == 0

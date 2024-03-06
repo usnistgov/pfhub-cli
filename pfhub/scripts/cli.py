@@ -6,6 +6,7 @@ import os
 import tempfile
 import shutil
 import sys
+import pathlib
 
 import click
 import click_params
@@ -15,12 +16,14 @@ import pykwalify
 import pykwalify.core
 import requests
 import linkml.validators.jsonschemavalidator as validator
+import papermill as pm
 
 from .. import test as pfhub_test
 from ..convert import meta_to_zenodo_no_zip, download_file, get_name
 from ..convert import download_zenodo as download_zenodo_
 from ..convert import download_meta as download_meta_
-from ..func import compact
+from ..func import compact, read_yaml
+from ..func import clear_cache as clear_cache_
 from ..new_to_old import to_old
 from ..upload import upload_to_zenodo
 
@@ -221,8 +224,26 @@ def generate_yaml(file_path):  # pylint: disable=unused-argument
 
 
 @cli.command(epilog=EPILOG)
-def generate_notebook(file_path):  # pylint: disable=unused-argument
+@click.argument("benchmark_id", type=click.Choice(["1a.1"]))
+@click.option("--clear-cache/--no-clear-cache", default=False)
+@click.option(
+    "--dest",
+    "-d",
+    help="destination directory",
+    default="./",
+    type=click.Path(exists=True, writable=True, file_okay=False),
+)
+def generate_notebook(benchmark_id, clear_cache, dest):
     """Generate the comparison notebook for the corresponding benchmark ID."""
+    if clear_cache:
+        clear_cache_()
+    nb_path = pathlib.Path(__file__).parent.resolve() / ".." / "notebooks"
+    pm.execute_notebook(
+        nb_path / "template.ipynb",
+        os.path.join(dest, f"benchmark{benchmark_id}.ipynb"),
+        parameters=read_yaml(nb_path / f"benchmark{benchmark_id}.yaml"),
+        progress_bar=True,
+    )
 
 
 @cli.command(epilog=EPILOG)
