@@ -1,0 +1,22 @@
+---
+name: Test Pip
+on: [push, pull_request]
+jobs:
+  pfhub-pip-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+        shell: bash -l {0}
+    steps:
+      - uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-name: test-env
+          create-args: >-
+            python=3.10
+            pip
+      - run: pip install git+https://github.com/usnistgov/pfhub-cli.git@${{ GITHUB_SHA }}
+      - env:
+          ZENODO_SANDBOX_API_TOKEN: ${{ secrets.ZENODO_SANDBOX_API_TOKEN }}
+        run: pfhub test
+
