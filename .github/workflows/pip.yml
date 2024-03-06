@@ -15,7 +15,7 @@ jobs:
           create-args: >-
             python=3.10
             pip
-      - run: pip install git+https://github.com/usnistgov/pfhub-cli.git@${{ GITHUB_SHA }}
+      - run: pip install git+https://github.com/usnistgov/pfhub-cli.git@${{ github.sha }}
       - env:
           ZENODO_SANDBOX_API_TOKEN: ${{ secrets.ZENODO_SANDBOX_API_TOKEN }}
         run: pfhub test
