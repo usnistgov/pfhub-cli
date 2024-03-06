@@ -104,8 +104,7 @@ def get_cached_session():
 
 
 def clear_cache():
-    """Clear the requests cached data
-    """
+    """Clear the requests cached data"""
     session = get_cached_session()
     session.cache.clear()
 
