@@ -137,5 +137,3 @@
 - https://raw.githubusercontent.com/usnistgov/pfhub/master/_data/simulations/spheharm_1d_bridge/meta.yaml
 - https://raw.githubusercontent.com/usnistgov/pfhub/master/_data/simulations/moose_1c_mpf/meta.yaml
 - https://raw.githubusercontent.com/usnistgov/pfhub/master/_data/simulations/SymPhas_7a_CS_5pt/meta.yaml
-- file:///home/wd15/git/pfhub-cli/testing/a/meta.yaml
-- file:///home/wd15/git/pfhub-cli/testing/b/meta.yaml
