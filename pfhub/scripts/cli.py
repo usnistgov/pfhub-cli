@@ -10,7 +10,7 @@ import pathlib
 
 import click
 import click_params
-from toolz.curried import pipe, get
+from toolz.curried import pipe, get, curry, assoc
 from toolz.curried import map as map_
 import pykwalify
 import pykwalify.core
@@ -22,14 +22,18 @@ from .. import test as pfhub_test
 from ..convert import meta_to_zenodo_no_zip, download_file, get_name
 from ..convert import download_zenodo as download_zenodo_
 from ..convert import download_meta as download_meta_
-from ..func import compact, read_yaml
+from ..func import compact, read_yaml, make_id, add_list_item, makeabs
 from ..func import clear_cache as clear_cache_
 from ..new_to_old import to_old
 from ..upload import upload_to_zenodo
 
 
-EPILOG = "See the documentation at \
-https://github.com/usnistgov/pfhub/blob/master/CLI.md (under construction)"
+f_result_list = (
+    lambda: pathlib.Path(__file__).parent.resolve() / ".." / "simulation_list.yaml"
+)
+
+
+EPILOG = "See the documentation at https://pages.nist.gov/pfhub-cli"
 
 
 @click.group(epilog=EPILOG)
@@ -224,7 +228,7 @@ def generate_yaml(file_path):  # pylint: disable=unused-argument
 
 
 @cli.command(epilog=EPILOG)
-@click.argument("benchmark_id", type=click.Choice(["1a.1"]))
+@click.option("--benchmark-id", "-b", type=click.Choice(["1a.1"]), default=None)
 @click.option("--clear-cache/--no-clear-cache", default=False)
 @click.option(
     "--dest",
@@ -233,17 +237,102 @@ def generate_yaml(file_path):  # pylint: disable=unused-argument
     default="./",
     type=click.Path(exists=True, writable=True, file_okay=False),
 )
-def generate_notebook(benchmark_id, clear_cache, dest):
+@click.option(
+    "--result-yaml",
+    "-r",
+    help="pfhub.yaml file to add to results",
+    default=None,
+    type=click.Path(exists=True, writable=True, dir_okay=False),
+)
+@click.option(
+    "--result-list",
+    "-l",
+    help="URL or path to YAML file with list of simulation results",
+    default=str(f_result_list()),
+    type=click_params.FirstOf(
+        click_params.URL,
+        click.Path(exists=True, writable=False, dir_okay=False),
+        name="url path",
+        return_param=True,
+    ),
+)
+def generate_notebook(benchmark_id, clear_cache, dest, result_yaml, result_list):
     """Generate the comparison notebook for the corresponding benchmark ID."""
     if clear_cache:
         clear_cache_()
-    nb_path = pathlib.Path(__file__).parent.resolve() / ".." / "notebooks"
+
+    if result_yaml is None:
+        if benchmark_id is None:
+            click.secho(
+                "Requires either --benchmark_id or --result-yaml to be specified",
+                fg="red",
+            )
+            sys.exit(1)
+
+    update_id = lambda x: x if result_yaml is None else make_id(read_yaml(result_yaml))
+    update_list = lambda x: (
+        x if result_yaml is None else add_list_item(x, makeabs(result_yaml))
+    )
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        output_path = pipe(
+            os.path.join(tmpdir, "result_list.yaml"),
+            make_tmp_list(result_list),
+            update_list,
+            generate_notebook_core(
+                pathlib.Path(__file__).parent.resolve() / ".." / "notebooks",
+                dest,
+                update_id(benchmark_id),
+            ),
+        )
+
+    output([output_path])
+
+
+@curry
+def make_tmp_list(result_list, tmp_list_path):
+    """Write the result list to the a temporary file
+
+    Args:
+      result_list: path or URL to the list of results
+      tmp_list_path: temporary place to store and overwrite list
+
+    Returns:
+      the tmp_list_path
+
+    """
+    if result_list[0] is click_params.URL:
+        return download_file(result_list[1], dest=tmp_list_path)
+
+    shutil.copyfile(result_list[1], tmp_list_path)
+    return tmp_list_path
+
+
+@curry
+def generate_notebook_core(nb_path, dest, benchmark_id, tmp_list_path):
+    """Generate the notebook given various paths
+
+    Args:
+      nb_path: the local path to notebooks
+      dest: the destination directory to write the new notebook
+      benchmark_id: the benchmark ID
+      tmp_list_path: the path to the results list
+
+    Returns:
+      the output path of the notebook
+    """
+    output_path = lambda x: os.path.join(dest, f"benchmark{x}.ipynb")
     pm.execute_notebook(
         nb_path / "template.ipynb",
-        os.path.join(dest, f"benchmark{benchmark_id}.ipynb"),
-        parameters=read_yaml(nb_path / f"benchmark{benchmark_id}.yaml"),
+        output_path(benchmark_id),
+        parameters=assoc(
+            read_yaml(nb_path / f"benchmark{benchmark_id}.yaml"),
+            "benchmark_path",
+            str(tmp_list_path),
+        ),
         progress_bar=True,
     )
+    return output_path(benchmark_id)
 
 
 @cli.command(epilog=EPILOG)

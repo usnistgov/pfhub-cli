@@ -81,6 +81,7 @@ def read_add_name(yaml_url):
             if "name" in x
             else assoc(x, "name", os.path.split(os.path.split(yaml_url)[0])[1])
         ),
+        lambda x: assoc(x, "url", yaml_url),
     )
 
 

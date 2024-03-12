@@ -234,7 +234,7 @@ def test_upload_to_zenodo():
     """Test upload to Zenodo"""
     runner = CliRunner()
     base = os.path.split(__file__)[0]
-    yaml_path = os.path.join(base, "..", "test_data", "pfhub.yaml")
+    yaml_path = os.path.join(base, "..", "test_data", "test_yaml", "pfhub.yaml")
     result = runner.invoke(upload, [yaml_path, "--sandbox"])
     assert result.exit_code == 0
     assert re.fullmatch(
@@ -246,9 +246,46 @@ def test_upload_to_zenodo():
 def test_generate_notebook(tmpdir):
     """Test generate-notebook"""
     runner = CliRunner()
-    result = runner.invoke(generate_notebook, ["1a.1", "--dest", tmpdir])
+
+    result = runner.invoke(generate_notebook, ["-b", "1a.1", "--dest", tmpdir])
+    output_path = os.path.join(tmpdir, "benchmark1a.1.ipynb")
     assert result.exit_code == 0
+    assert result.output.splitlines()[-1] == f"Writing: {output_path}"
+
     result = runner.invoke(
-        generate_notebook, ["1a.1", "--dest", tmpdir, "--clear-cache"]
+        generate_notebook, ["-b", "1a.1", "--dest", tmpdir, "--clear-cache"]
+    )
+    assert result.exit_code == 0
+    assert result.output.splitlines()[-1] == f"Writing: {output_path}"
+
+    list_url = (
+        "https://gist.githubusercontent.com/wd15/"
+        "b61622b8e10baa9b0415b0a0a6bda365/raw/"
+        "0fccced5d22486cf0b1d7b012b0014c24b5f5d9c/result_list_empty.yaml"
+    )
+    result = runner.invoke(
+        generate_notebook, ["-b", "1a.1", "--dest", tmpdir, "-l", list_url]
+    )
+    assert result.exit_code == 0
+    assert result.output.splitlines()[-1] == f"Writing: {output_path}"
+
+    result = runner.invoke(generate_notebook, [])
+    assert result.exit_code == 1
+    assert (
+        result.output.splitlines()[-1]
+        == "Requires either --benchmark_id or --result-yaml to be specified"
+    )
+
+
+def test_adding_result_notebook(tmpdir):
+    """Test adding an old style meta.yaml to the result list"""
+    runner = CliRunner()
+    base = os.path.split(__file__)[0]
+    yaml_path = os.path.join(base, "..", "test_data", "relative", "meta.yaml")
+    list_path = os.path.join(
+        base, "..", "test_data", "relative", "result_list_empty.yaml"
+    )
+    result = runner.invoke(
+        generate_notebook, ["-r", yaml_path, "--dest", tmpdir, "-l", list_path]
     )
     assert result.exit_code == 0
