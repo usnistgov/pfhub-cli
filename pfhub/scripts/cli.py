@@ -10,7 +10,7 @@ import pathlib
 
 import click
 import click_params
-from toolz.curried import pipe, get, curry, assoc
+from toolz.curried import pipe, get, curry, assoc, unique
 from toolz.curried import map as map_
 import pykwalify
 import pykwalify.core
@@ -22,7 +22,7 @@ from .. import test as pfhub_test
 from ..convert import meta_to_zenodo_no_zip, download_file, get_name
 from ..convert import download_zenodo as download_zenodo_
 from ..convert import download_meta as download_meta_
-from ..func import compact, read_yaml, make_id, add_list_item, makeabs
+from ..func import compact, read_yaml, make_id, add_list_items, makeabs
 from ..func import clear_cache as clear_cache_
 from ..new_to_old import to_old
 from ..upload import upload_to_zenodo
@@ -228,7 +228,7 @@ def generate_yaml(file_path):  # pylint: disable=unused-argument
 
 
 @cli.command(epilog=EPILOG)
-@click.option("--benchmark-id", "-b", type=click.Choice(["1a.1"]), default=None)
+@click.option("--benchmark-id", "-b", type=click.Choice(["1a.1"]), multiple=True)
 @click.option("--clear-cache/--no-clear-cache", default=False)
 @click.option(
     "--dest",
@@ -240,9 +240,14 @@ def generate_yaml(file_path):  # pylint: disable=unused-argument
 @click.option(
     "--result-yaml",
     "-r",
-    help="pfhub.yaml file to add to results",
-    default=None,
-    type=click.Path(exists=True, writable=True, dir_okay=False),
+    help="Local meta.yaml or pfhub.yaml file to add to results",
+    multiple=True,
+    type=click_params.FirstOf(
+        click_params.URL,
+        click.Path(exists=True, writable=False, dir_okay=False),
+        name="url path",
+        return_param=False,
+    ),
 )
 @click.option(
     "--result-list",
@@ -256,37 +261,53 @@ def generate_yaml(file_path):  # pylint: disable=unused-argument
         return_param=True,
     ),
 )
-def generate_notebook(benchmark_id, clear_cache, dest, result_yaml, result_list):
-    """Generate the comparison notebook for the corresponding benchmark ID."""
+def render_notebook(benchmark_id, clear_cache, dest, result_yaml, result_list):
+    """Render the comparison notebook for the corresponding benchmark ID."""
     if clear_cache:
         clear_cache_()
 
-    if result_yaml is None:
-        if benchmark_id is None:
+    def raise_error(benchmark_ids):
+        if len(benchmark_ids) == 0:
             click.secho(
                 "Requires either --benchmark_id or --result-yaml to be specified",
                 fg="red",
             )
             sys.exit(1)
+        return benchmark_ids
 
-    update_id = lambda x: x if result_yaml is None else make_id(read_yaml(result_yaml))
-    update_list = lambda x: (
-        x if result_yaml is None else add_list_item(x, makeabs(result_yaml))
+    output_paths = pipe(
+        list(benchmark_id) + [make_id(read_yaml(x)) for x in result_yaml],
+        unique,
+        list,
+        raise_error,
+        map_(render_single(result_list, result_yaml, dest)),
+        list
     )
 
+    output(output_paths)
+
+@curry
+def render_single(result_list, result_yaml, dest, benchmark_id):
+    """Render a single notebook
+
+    Args:
+       result_list: path to list of results
+       result_yaml: path to the result meta file
+       dest: the path to write the new notebook
+       benchmark_id: the benchmark to render
+    """
     with tempfile.TemporaryDirectory() as tmpdir:
         output_path = pipe(
             os.path.join(tmpdir, "result_list.yaml"),
             make_tmp_list(result_list),
-            update_list,
-            generate_notebook_core(
+            add_list_items(list(map_(makeabs, result_yaml))),
+            generate_notebook(
                 pathlib.Path(__file__).parent.resolve() / ".." / "notebooks",
                 dest,
-                update_id(benchmark_id),
+                benchmark_id,
             ),
         )
-
-    output([output_path])
+    return output_path
 
 
 @curry
@@ -309,7 +330,7 @@ def make_tmp_list(result_list, tmp_list_path):
 
 
 @curry
-def generate_notebook_core(nb_path, dest, benchmark_id, tmp_list_path):
+def generate_notebook(nb_path, dest, benchmark_id, tmp_list_path):
     """Generate the notebook given various paths
 
     Args:

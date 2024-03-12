@@ -15,7 +15,7 @@ from .cli import (
     validate_old,
     convert_to_old,
     upload,
-    generate_notebook,
+    render_notebook,
 )
 
 
@@ -243,17 +243,17 @@ def test_upload_to_zenodo():
     )
 
 
-def test_generate_notebook(tmpdir):
-    """Test generate-notebook"""
+def test_render_notebook(tmpdir):
+    """Test render-notebook"""
     runner = CliRunner()
 
-    result = runner.invoke(generate_notebook, ["-b", "1a.1", "--dest", tmpdir])
+    result = runner.invoke(render_notebook, ["-b", "1a.1", "--dest", tmpdir])
     output_path = os.path.join(tmpdir, "benchmark1a.1.ipynb")
     assert result.exit_code == 0
     assert result.output.splitlines()[-1] == f"Writing: {output_path}"
 
     result = runner.invoke(
-        generate_notebook, ["-b", "1a.1", "--dest", tmpdir, "--clear-cache"]
+        render_notebook, ["-b", "1a.1", "--dest", tmpdir, "--clear-cache"]
     )
     assert result.exit_code == 0
     assert result.output.splitlines()[-1] == f"Writing: {output_path}"
@@ -264,12 +264,12 @@ def test_generate_notebook(tmpdir):
         "0fccced5d22486cf0b1d7b012b0014c24b5f5d9c/result_list_empty.yaml"
     )
     result = runner.invoke(
-        generate_notebook, ["-b", "1a.1", "--dest", tmpdir, "-l", list_url]
+        render_notebook, ["-b", "1a.1", "--dest", tmpdir, "-l", list_url]
     )
     assert result.exit_code == 0
     assert result.output.splitlines()[-1] == f"Writing: {output_path}"
 
-    result = runner.invoke(generate_notebook, [])
+    result = runner.invoke(render_notebook, [])
     assert result.exit_code == 1
     assert (
         result.output.splitlines()[-1]
@@ -286,6 +286,6 @@ def test_adding_result_notebook(tmpdir):
         base, "..", "test_data", "relative", "result_list_empty.yaml"
     )
     result = runner.invoke(
-        generate_notebook, ["-r", yaml_path, "--dest", tmpdir, "-l", list_path]
+        render_notebook, ["-r", yaml_path, "--dest", tmpdir, "-l", list_path]
     )
     assert result.exit_code == 0

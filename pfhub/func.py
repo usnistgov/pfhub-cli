@@ -519,18 +519,18 @@ def write_files(string_dict, dest):
 
     return list(map_(write(dest), string_dict.items()))
 
-
-def add_list_item(filepath, item):
+@curry
+def add_list_items(items, filepath):
     """Add an item to YAML list in a file
 
     Args:
+      items: the item to add (probably a string)
       filepath: path to file
-      item: the item to add (probably a string)
 
     Returns:
       the filepath
     """
-    data = read_yaml(filepath) + [item]
+    data = read_yaml(filepath) + items
     with open(filepath, "w", encoding="utf-8") as f:
         yaml.dump(data, f)
     return filepath
