@@ -519,6 +519,7 @@ def write_files(string_dict, dest):
 
     return list(map_(write(dest), string_dict.items()))
 
+
 @curry
 def add_list_items(items, filepath):
     """Add an item to YAML list in a file

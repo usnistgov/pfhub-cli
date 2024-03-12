@@ -281,10 +281,11 @@ def render_notebook(benchmark_id, clear_cache, dest, result_yaml, result_list):
         list,
         raise_error,
         map_(render_single(result_list, result_yaml, dest)),
-        list
+        list,
     )
 
     output(output_paths)
+
 
 @curry
 def render_single(result_list, result_yaml, dest, benchmark_id):
