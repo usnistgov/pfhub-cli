@@ -56,7 +56,7 @@ def download_zenodo(url, dest):
     Works with any Zenodo link
 
     Args:
-      url: the URL of either a meta.yaml or Zenodo record
+      url: the URL of a Zenodo record
       dest: the destination directory
     """
     record_id = get_zenodo_record_id(url, zenodo_regexs())
@@ -222,8 +222,8 @@ def validate(file_path):
 
 @cli.command(epilog=EPILOG)
 def generate_yaml(file_path):  # pylint: disable=unused-argument
-    """Infer a PFHub YAML file from GitHub ID, ORCID, benchmark ID and/or
-    existing record.
+    """(Not implemented) Infer a PFHub YAML file from GitHub ID, ORCID,
+    benchmark ID and/or existing record.
     """
 
 
@@ -382,12 +382,12 @@ def upload(file_path, sandbox):  # pylint: disable=unused-argument
 @cli.command(epilog=EPILOG)
 @click.argument("url", type=click_params.URL)
 def submit(url):  # pylint: disable=unused-argument
-    """Submit to Zenodo and open PFHub PR"""
+    """(Not implemented) Submit to Zenodo and open PFHub PR"""
 
 
 @cli.command(epilog=EPILOG)
 def submit_from_zenodo():  # pylint: disable=unused-argument
-    """Submit an existing Zenodo record to PFHub"""
+    """(Not implemented) Submit an existing Zenodo record to PFHub"""
 
 
 def zenodo_regexs():
