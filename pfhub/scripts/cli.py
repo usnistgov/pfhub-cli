@@ -10,7 +10,7 @@ import pathlib
 
 import click
 import click_params
-from toolz.curried import pipe, get, curry, assoc, unique
+from toolz.curried import pipe, get, curry, assoc, unique, concat
 from toolz.curried import map as map_
 import pykwalify
 import pykwalify.core
@@ -281,6 +281,7 @@ def render_notebook(benchmark_id, clear_cache, dest, result_yaml, result_list):
         list,
         raise_error,
         map_(render_single(result_list, result_yaml, dest)),
+        concat,
         list,
     )
 
@@ -297,18 +298,17 @@ def render_single(result_list, result_yaml, dest, benchmark_id):
        dest: the path to write the new notebook
        benchmark_id: the benchmark to render
     """
-    with tempfile.TemporaryDirectory() as tmpdir:
-        output_path = pipe(
-            os.path.join(tmpdir, "result_list.yaml"),
-            make_tmp_list(result_list),
-            add_list_items(list(map_(makeabs, result_yaml))),
-            generate_notebook(
-                pathlib.Path(__file__).parent.resolve() / ".." / "notebooks",
-                dest,
-                benchmark_id,
-            ),
-        )
-    return output_path
+
+    return pipe(
+        os.path.join(dest, f"result_list_{benchmark_id}.yaml"),
+        make_tmp_list(result_list),
+        add_list_items(list(map_(makeabs, result_yaml))),
+        generate_notebook(
+            pathlib.Path(__file__).parent.resolve() / ".." / "notebooks",
+            dest,
+            benchmark_id,
+        ),
+    )
 
 
 @curry
@@ -354,7 +354,7 @@ def generate_notebook(nb_path, dest, benchmark_id, tmp_list_path):
         ),
         progress_bar=True,
     )
-    return output_path(benchmark_id)
+    return [output_path(benchmark_id), tmp_list_path]
 
 
 @cli.command(epilog=EPILOG)

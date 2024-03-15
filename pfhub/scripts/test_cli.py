@@ -249,14 +249,15 @@ def test_render_notebook(tmpdir):
 
     result = runner.invoke(render_notebook, ["-b", "1a.1", "--dest", tmpdir])
     output_path = os.path.join(tmpdir, "benchmark1a.1.ipynb")
+    result_path = os.path.join(tmpdir, "result_list_1a.1.yaml")
     assert result.exit_code == 0
-    assert result.output.splitlines()[-1] == f"Writing: {output_path}"
+    assert result.output.splitlines()[-1] == f"Writing: {output_path}, {result_path}"
 
     result = runner.invoke(
         render_notebook, ["-b", "1a.1", "--dest", tmpdir, "--clear-cache"]
     )
     assert result.exit_code == 0
-    assert result.output.splitlines()[-1] == f"Writing: {output_path}"
+    assert result.output.splitlines()[-1] == f"Writing: {output_path}, {result_path}"
 
     list_url = (
         "https://gist.githubusercontent.com/wd15/"
@@ -267,7 +268,7 @@ def test_render_notebook(tmpdir):
         render_notebook, ["-b", "1a.1", "--dest", tmpdir, "-l", list_url]
     )
     assert result.exit_code == 0
-    assert result.output.splitlines()[-1] == f"Writing: {output_path}"
+    assert result.output.splitlines()[-1] == f"Writing: {output_path}, {result_path}"
 
     result = runner.invoke(render_notebook, [])
     assert result.exit_code == 1
