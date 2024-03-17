@@ -1,0 +1,49 @@
+---
+id: https://github.com/stvdwtt/pfhub_data/tree/main/meumapps_bm1a
+benchmark_problem: 1a.1
+
+date_created: '2021-04-01'
+
+schema:
+  url: >-
+    https://github.com/usnistgov/pfhub-schema/tree/2b06531/project
+
+summary: >-
+  This simulation was performed using a currently unreleased version of MEUMAPPS, developed at Oak Ridge National Lab. This simulation does not have any adaptivity in time or space.
+
+  Spatial discretization: Fourier-spectral
+  Temporal discretization:  Semi-implicit backward Euler
+  Grid: 128x128
+  Time step: 0.1 
+
+  I think spatially this simulation is pretty well converged. As far as temporal convergence goes, there are some qualitative differences in the early evolution if I use smaller time steps but the energy evolution doesn't change much. This simulation runs until the system is quite near to equilibrium.
+
+contributors:
+  - id: github:stvdwtt
+    name: Stephen DeWitt
+    affiliation: []
+    email: dewittsj@ornl.gov
+
+framework:
+  - url: https://github.com/stvdwtt/pfhub_data/tree/main/meumapps_bm1a
+    name: meumapps
+    download: https://github.com/stvdwtt/pfhub_data/tree/main/meumapps_bm1a
+    version: "0.0"
+
+implementation:
+  url: >-
+    https://github.com/stvdwtt/pfhub_data/tree/main/meumapps_bm1a
+
+results:
+  dataset_temporal:
+    - name: free_energy_1a.csv
+      columns:
+        - time
+        - free_energy
+  hardware:
+    architecture: x86_64
+    cores: 1
+    nodes: 1
+  fictive_time: 100000
+  memory_in_kb: 139200
+  time_in_s: 2100
