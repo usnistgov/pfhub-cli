@@ -25,7 +25,19 @@ import dateutil
 
 fullmatch = curry(re.fullmatch)
 
-make_id = lambda x: ".".join([x["benchmark"]["id"], str(x["benchmark"]["version"])])
+
+def make_id(data):
+    """Generate a benchmark ID old or new schema YAML data
+
+    Args:
+      data: old or new record schema dictionary
+
+    Returns:
+      the benchmark ID (e.g. "1a.1")
+    """
+    if "benchmark" in data:
+        return ".".join([data["benchmark"]["id"], str(data["benchmark"]["version"])])
+    return data["benchmark_problem"]
 
 
 @curry

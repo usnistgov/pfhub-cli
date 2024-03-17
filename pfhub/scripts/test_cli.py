@@ -310,3 +310,15 @@ def test_converting_new_to_old(tmpdir):
         base, "..", "test_data", "meumapps", "free_energy_1a.csv"
     )
     assert yaml_data["data"][2]["name"] == "free_energy"
+
+
+def test_adding_new_result(tmpdir):
+    """Test adding a pfhub.yaml to the results"""
+    runner = CliRunner()
+    base = os.path.split(__file__)[0]
+    yaml_path = os.path.join(base, "..", "test_data", "meumapps", "pfhub.yaml")
+    result = runner.invoke(render_notebook, ["-r", yaml_path, "--dest", tmpdir])
+    outpath1 = os.path.join(tmpdir, "benchmark1a.1.ipynb")
+    outpath2 = os.path.join(tmpdir, "result_list_1a.1.yaml")
+    assert result.exit_code == 0
+    assert result.output.splitlines()[-1] == f"Writing: {outpath1}, {outpath2}"
