@@ -322,3 +322,16 @@ def test_adding_new_result(tmpdir):
     outpath2 = os.path.join(tmpdir, "result_list_1a.1.yaml")
     assert result.exit_code == 0
     assert result.output.splitlines()[-1] == f"Writing: {outpath1}, {outpath2}"
+
+
+def test_name_generation(tmpdir):
+    """Test name generation when converting from new to old"""
+    runner = CliRunner()
+    base = os.path.split(__file__)[0]
+    yaml_path = os.path.join(base, "..", "test_data", "meumapps", "pfhub.yaml")
+    result = runner.invoke(convert_to_old, [yaml_path, "--dest", tmpdir])
+    outpath = os.path.join(tmpdir, "meta.yaml")
+    assert result.exit_code == 0
+    assert result.output.splitlines()[-1] == f"Writing: {outpath}"
+    data = read_yaml(outpath)
+    assert data["name"] == "meumapps-1a.1-stvdwtt-2021-04-01"

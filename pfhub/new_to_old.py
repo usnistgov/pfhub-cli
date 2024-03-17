@@ -113,9 +113,29 @@ def subs(data_all, lines_and_contours):
         "memory_usage": data_all.results.memory_in_kb,
         "lines": lines_and_contours["lines"],
         "contours": lines_and_contours.get("contours", []),
-        "name": data_all.id,
+        "name": make_name(data_all),
         "repo_version": "aaaaa",
     }
+
+
+def make_name(data_all):
+    """Generate a name from a new schema record
+
+    Args:
+      data_all: new schema dictionary
+
+    Returns:
+      a sensibel name string
+    """
+    return (
+        data_all.framework[0].name
+        + "-"
+        + data_all.benchmark_problem
+        + "-"
+        + data_all.contributors[0].id.split(":")[1]
+        + "-"
+        + data_all.date_created
+    )
 
 
 def render_meta(data_all):
