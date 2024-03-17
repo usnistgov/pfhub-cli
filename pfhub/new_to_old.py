@@ -90,7 +90,7 @@ def subs(data_all, lines_and_contours):
       a substitution dict
     """
     github_id = get_github_id(data_all.contributors[0].id)
-    print("data_all.id:", data_all.id)
+
     return {
         "first": get(0, data_all.contributors[0].name.split(" "), ""),
         "last": get(1, data_all.contributors[0].name.split(" "), ""),
