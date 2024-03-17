@@ -17,6 +17,7 @@ from .cli import (
     upload,
     render_notebook,
 )
+from ..func import read_yaml
 
 
 def test_cli():
@@ -290,3 +291,22 @@ def test_adding_result_notebook(tmpdir):
         render_notebook, ["-r", yaml_path, "--dest", tmpdir, "-l", list_path]
     )
     assert result.exit_code == 0
+
+
+def test_converting_new_to_old(tmpdir):
+    """Test converting new pfhub.yaml to old meta.yaml
+
+    Also, update the data item urls to point at the local path to files.
+    """
+    runner = CliRunner()
+    base = os.path.split(__file__)[0]
+    yaml_path = os.path.join(base, "..", "test_data", "meumapps", "pfhub.yaml")
+    result = runner.invoke(convert_to_old, [yaml_path, "--dest", tmpdir])
+    outpath = os.path.join(tmpdir, "meta.yaml")
+    assert result.exit_code == 0
+    assert result.output.splitlines()[-1] == f"Writing: {outpath}"
+    yaml_data = read_yaml(outpath)
+    assert yaml_data["data"][2]["url"] == os.path.join(
+        base, "..", "test_data", "meumapps", "free_energy_1a.csv"
+    )
+    assert yaml_data["data"][2]["name"] == "free_energy"

@@ -2,12 +2,15 @@
 """
 
 import re
+import os
+import textwrap
 
 from dotwiz import DotWiz
-from toolz.curried import get, pipe
+from toolz.curried import get, pipe, assoc_in, curry, assoc, get_in
 from toolz.curried import map as map_
+from toolz.curried import filter as filter_
 
-from .func import read_yaml, render, write_files
+from .func import read_yaml, render, write_files, isabs, makeabs
 
 
 def to_old(path, dest):
@@ -20,9 +23,37 @@ def to_old(path, dest):
     Returns:
       the paths for the output files
     """
-    data_all = DotWiz(read_yaml(path))
-    str_ = render_meta(data_all)
-    return write_files({"meta.yaml": str_}, dest)
+    return pipe(
+        path,
+        read_yaml,
+        DotWiz,
+        fix_data_urls(os.path.dirname(makeabs(path))),
+        DotWiz,
+        render_meta,
+        lambda x: write_files({"meta.yaml": x}, dest),
+    )
+
+
+@curry
+def fix_data_urls(base_path, data_all):
+    """Add the abosulte paths to the data items in meta.yaml
+
+    Args:
+      base_path: the base path of the meta.yaml
+      data_all: all the data from the pfhub.yaml
+
+    Returns:
+      all the data from the pfhub.yaml with updated data item paths
+    """
+    add_base_path = lambda x: x if isabs(x) else os.path.join(base_path, x)
+    update = lambda x: assoc(x, "url", add_base_path(x.name))
+
+    return pipe(
+        data_all.results.dataset_temporal,
+        map_(update),
+        list,
+        assoc_in(data_all, ["results", "dataset_temporal"]),
+    )
 
 
 def get_github_id(str_):
@@ -59,11 +90,12 @@ def subs(data_all, lines_and_contours):
       a substitution dict
     """
     github_id = get_github_id(data_all.contributors[0].id)
+    print("data_all.id:", data_all.id)
     return {
         "first": get(0, data_all.contributors[0].name.split(" "), ""),
         "last": get(1, data_all.contributors[0].name.split(" "), ""),
         "github_id": github_id if github_id else "",
-        "summary": data_all.summary,
+        "summary": textwrap.indent(data_all.summary, "    "),
         "timestamp": data_all.date_created,
         "cpu_architecture": data_all.results.hardware.architecture,
         "acc_architecture": "none",
@@ -80,7 +112,7 @@ def subs(data_all, lines_and_contours):
         "sim_time": data_all.results.fictive_time,
         "memory_usage": data_all.results.memory_in_kb,
         "lines": lines_and_contours["lines"],
-        "contours": lines_and_contours.get("contour", []),
+        "contours": lines_and_contours.get("contours", []),
         "name": data_all.id,
         "repo_version": "aaaaa",
     }
@@ -99,11 +131,34 @@ def get_lines(data_all):
     def get_line(item):
         return {
             "description": "",
-            "url": item.name,
+            "url": item.url,
             "ext_type": item.name.split(".")[1],
-            "name": item.name.split(".")[0],
+            "name": data_name_to_old(item.name, data_all),
             "x_field": item.columns[0],
             "y_field": item.columns[1],
         }
 
     return pipe(data_all.results.dataset_temporal, map_(get_line), list)
+
+
+def data_name_to_old(pfhub_name, data_all):
+    """Translate data name from pfhub.yaml into meta.yaml
+
+    Args:
+      pfhub_name: the pfhub.yaml data name
+      data_all: all the data from the pfhub.yaml file
+
+    Returns:
+      corresponding name in meta.yaml schema
+    """
+    get_data_file = lambda x: os.path.join(
+        os.path.dirname(__file__), "templates", f"{x}_data.yaml"
+    )
+    return pipe(
+        data_all.benchmark_problem.split(".")[0],
+        get_data_file,
+        read_yaml,
+        filter_(lambda x: x["schema"]["name"] == pfhub_name),
+        list,
+        get_in([0, "name"]),
+    )
