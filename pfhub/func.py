@@ -1,5 +1,6 @@
 """Functions used by other modules
 """
+
 from functools import wraps
 from urllib.error import HTTPError, URLError
 import logging
@@ -24,7 +25,19 @@ import dateutil
 
 fullmatch = curry(re.fullmatch)
 
-make_id = lambda x: ".".join([x["benchmark"]["id"], str(x["benchmark"]["version"])])
+
+def make_id(data):
+    """Generate a benchmark ID old or new schema YAML data
+
+    Args:
+      data: old or new record schema dictionary
+
+    Returns:
+      the benchmark ID (e.g. "1a.1")
+    """
+    if "benchmark" in data:
+        return ".".join([data["benchmark"]["id"], str(data["benchmark"]["version"])])
+    return data["benchmark_problem"]
 
 
 @curry
@@ -93,10 +106,19 @@ def maybe(func):
 
 
 def get_cached_session():
-    """Get the cached session"""
+    """Get the requests cached session
+
+    Use `session.cache.clear()` to empty the cache.
+    """
     return CachedSession(
         expire_after=timedelta(days=30), backend="sqlite", use_temp=True
     )
+
+
+def clear_cache():
+    """Clear the requests cached data"""
+    session = get_cached_session()
+    session.cache.clear()
 
 
 def sequence(*args):
@@ -255,6 +277,16 @@ def read_csv(sep_, path):
         return None
 
 
+def isabs(path):
+    """Check if a path is an absolute or relative path"""
+    return (
+        urllib.parse.urlparse(str(path)).scheme in ("http", "https", "file")
+    ) or os.path.isabs(path)
+
+
+makeabs = lambda x: x if isabs(x) else os.path.join(os.getcwd(), x)
+
+
 @curry
 def debug(stmt, data):  # pragma: no cover
     """Helpful debug function"""
@@ -321,11 +353,18 @@ def get_data_from_yaml(data_names, keys, yaml_data):
     0  0.0  0.0  free_energy
     1  1.0  1.0  free_energy
     """
+
+    base_path = lambda x: os.path.dirname(x["url"])
     return pipe(
         yaml_data,
         get("data"),
         filter_(lambda x: x["name"] in data_names),
-        map_(lambda x: ({"data_set": x["name"]}, read_vega_data(keys, x))),
+        map_(
+            lambda x: (
+                {"data_set": x["name"]},
+                read_vega_data(keys, x, base_path=base_path(yaml_data)),
+            )
+        ),
         concat_items,
     )
 
@@ -375,7 +414,7 @@ def compact(items):
     return filter(lambda x: x is not None, items)
 
 
-def read_vega_data(keys, data):
+def read_vega_data(keys, data, base_path):
     """Read vega data given keys to extract
 
     Read a vega data block given the keys (or columns) to extract
@@ -383,13 +422,17 @@ def read_vega_data(keys, data):
     Args:
       keys: columns of each data item
       data: the data block with the given columns
+      base_path: base path to use in case of relative links
 
     Returns:
       The data columns in a pandas DataFrame
 
     """
+    add_base_path = lambda x: x if isabs(x) else os.path.join(base_path, x)
+
     read_url = sequence(
         get("url"),
+        add_base_path,
         read_csv(sep(data.get("format"))),
     )
 
@@ -487,3 +530,20 @@ def write_files(string_dict, dest):
         return path
 
     return list(map_(write(dest), string_dict.items()))
+
+
+@curry
+def add_list_items(items, filepath):
+    """Add an item to YAML list in a file
+
+    Args:
+      items: the item to add (probably a string)
+      filepath: path to file
+
+    Returns:
+      the filepath
+    """
+    data = read_yaml(filepath) + items
+    with open(filepath, "w", encoding="utf-8") as f:
+        yaml.dump(data, f)
+    return filepath

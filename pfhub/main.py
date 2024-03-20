@@ -3,6 +3,7 @@
 
 import os
 import pathlib
+import tempfile
 
 from toolz.curried import filter as filter_
 from toolz.curried import map as map_
@@ -37,6 +38,7 @@ from .func import (
     make_id,
 )
 from .zenodo import zenodo_to_pfhub
+from .new_to_old import to_old
 
 
 BENCHMARK_PATH = str(
@@ -47,6 +49,30 @@ BENCHMARK_PATH = str(
 make_author = lambda x: pipe(
     x, get_in(["metadata", "author"]), get(["first", "last"]), " ".join
 )
+
+
+def process(yaml_url):
+    """Read a record and return an old style meta.yaml dictionary
+
+    Args:
+      yaml_url: path or url to YAML file
+
+    Returns:
+      Dictionary in meta.yaml format
+    """
+    matchzenodo = fullmatch(r"https://doi.org/\d{2}.\d{4}/zenodo.\d{7}")
+    matchold = lambda x: "benchmark" in read_yaml(x)
+
+    if matchzenodo(yaml_url):
+        return yaml.safe_load(zenodo_to_pfhub(yaml_url))
+
+    if matchold(yaml_url):
+        return read_yaml(yaml_url)
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        yaml_path = to_old(yaml_url, tmpdir)[0]
+        yaml_data = read_yaml(yaml_path)
+    return yaml_data
 
 
 def read_add_name(yaml_url):
@@ -68,17 +94,15 @@ def read_add_name(yaml_url):
     ... ).as_uri())['name'] == 'result1'
 
     """
-    matchzenodo = fullmatch(r"https://doi.org/\d{2}.\d{4}/zenodo.\d{7}")
-    process = (
-        lambda x: yaml.safe_load(zenodo_to_pfhub(x)) if matchzenodo(x) else read_yaml(x)
-    )
-
     return pipe(
         yaml_url,
         process,
-        lambda x: x
-        if "name" in x
-        else assoc(x, "name", os.path.split(os.path.split(yaml_url)[0])[1]),
+        lambda x: (
+            x
+            if "name" in x
+            else assoc(x, "name", os.path.split(os.path.split(yaml_url)[0])[1])
+        ),
+        lambda x: assoc(x, "url", yaml_url),
     )
 
 

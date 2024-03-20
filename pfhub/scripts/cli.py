@@ -6,27 +6,34 @@ import os
 import tempfile
 import shutil
 import sys
+import pathlib
 
 import click
 import click_params
-from toolz.curried import pipe, get
+from toolz.curried import pipe, get, curry, assoc, unique, concat
 from toolz.curried import map as map_
 import pykwalify
 import pykwalify.core
 import requests
 import linkml.validators.jsonschemavalidator as validator
+import papermill as pm
 
 from .. import test as pfhub_test
 from ..convert import meta_to_zenodo_no_zip, download_file, get_name
 from ..convert import download_zenodo as download_zenodo_
 from ..convert import download_meta as download_meta_
-from ..func import compact
+from ..func import compact, read_yaml, make_id, add_list_items, makeabs
+from ..func import clear_cache as clear_cache_
 from ..new_to_old import to_old
 from ..upload import upload_to_zenodo
 
 
-EPILOG = "See the documentation at \
-https://github.com/usnistgov/pfhub/blob/master/CLI.md (under construction)"
+f_result_list = (
+    lambda: pathlib.Path(__file__).parent.resolve() / ".." / "simulation_list.yaml"
+)
+
+
+EPILOG = "See the documentation at https://pages.nist.gov/pfhub-cli"
 
 
 @click.group(epilog=EPILOG)
@@ -49,7 +56,7 @@ def download_zenodo(url, dest):
     Works with any Zenodo link
 
     Args:
-      url: the URL of either a meta.yaml or Zenodo record
+      url: the URL of a Zenodo record
       dest: the destination directory
     """
     record_id = get_zenodo_record_id(url, zenodo_regexs())
@@ -215,14 +222,139 @@ def validate(file_path):
 
 @cli.command(epilog=EPILOG)
 def generate_yaml(file_path):  # pylint: disable=unused-argument
-    """Infer a PFHub YAML file from GitHub ID, ORCID, benchmark ID and/or
-    existing record.
+    """(Not implemented) Infer a PFHub YAML file from GitHub ID, ORCID,
+    benchmark ID and/or existing record.
     """
 
 
 @cli.command(epilog=EPILOG)
-def generate_notebook(file_path):  # pylint: disable=unused-argument
-    """Generate the comparison notebook for the corresponding benchmark ID."""
+@click.option("--benchmark-id", "-b", type=click.Choice(["1a.1"]), multiple=True)
+@click.option("--clear-cache/--no-clear-cache", default=False)
+@click.option(
+    "--dest",
+    "-d",
+    help="destination directory",
+    default="./",
+    type=click.Path(exists=True, writable=True, file_okay=False),
+)
+@click.option(
+    "--result-yaml",
+    "-r",
+    help="Local meta.yaml or pfhub.yaml file to add to results",
+    multiple=True,
+    type=click_params.FirstOf(
+        click_params.URL,
+        click.Path(exists=True, writable=False, dir_okay=False),
+        name="url path",
+        return_param=False,
+    ),
+)
+@click.option(
+    "--result-list",
+    "-l",
+    help="URL or path to YAML file with list of simulation results",
+    default=str(f_result_list()),
+    type=click_params.FirstOf(
+        click_params.URL,
+        click.Path(exists=True, writable=False, dir_okay=False),
+        name="url path",
+        return_param=True,
+    ),
+)
+def render_notebook(benchmark_id, clear_cache, dest, result_yaml, result_list):
+    """Render the comparison notebook for the corresponding benchmark ID."""
+    if clear_cache:
+        clear_cache_()
+
+    def raise_error(benchmark_ids):
+        if len(benchmark_ids) == 0:
+            click.secho(
+                "Requires either --benchmark_id or --result-yaml to be specified",
+                fg="red",
+            )
+            sys.exit(1)
+        return benchmark_ids
+
+    output_paths = pipe(
+        list(benchmark_id) + [make_id(read_yaml(x)) for x in result_yaml],
+        unique,
+        list,
+        raise_error,
+        map_(render_single(result_list, result_yaml, dest)),
+        concat,
+        list,
+    )
+
+    output(output_paths)
+
+
+@curry
+def render_single(result_list, result_yaml, dest, benchmark_id):
+    """Render a single notebook
+
+    Args:
+       result_list: path to list of results
+       result_yaml: path to the result meta file
+       dest: the path to write the new notebook
+       benchmark_id: the benchmark to render
+    """
+
+    return pipe(
+        os.path.join(dest, f"result_list_{benchmark_id}.yaml"),
+        make_tmp_list(result_list),
+        add_list_items(list(map_(makeabs, result_yaml))),
+        generate_notebook(
+            pathlib.Path(__file__).parent.resolve() / ".." / "notebooks",
+            dest,
+            benchmark_id,
+        ),
+    )
+
+
+@curry
+def make_tmp_list(result_list, tmp_list_path):
+    """Write the result list to the a temporary file
+
+    Args:
+      result_list: path or URL to the list of results
+      tmp_list_path: temporary place to store and overwrite list
+
+    Returns:
+      the tmp_list_path
+
+    """
+    if result_list[0] is click_params.URL:
+        return download_file(result_list[1], dest=tmp_list_path)
+
+    shutil.copyfile(result_list[1], tmp_list_path)
+    return tmp_list_path
+
+
+@curry
+def generate_notebook(nb_path, dest, benchmark_id, tmp_list_path):
+    """Generate the notebook given various paths
+
+    Args:
+      nb_path: the local path to notebooks
+      dest: the destination directory to write the new notebook
+      benchmark_id: the benchmark ID
+      tmp_list_path: the path to the results list
+
+    Returns:
+      the output path of the notebook
+    """
+    output_path = lambda x: os.path.join(dest, f"benchmark{x}.ipynb")
+    pm.execute_notebook(
+        nb_path / "template.ipynb",
+        output_path(benchmark_id),
+        parameters=assoc(
+            read_yaml(nb_path / f"benchmark{benchmark_id}.yaml"),
+            "benchmark_path",
+            str(tmp_list_path),
+        ),
+        progress_bar=True,
+    )
+    return [output_path(benchmark_id), tmp_list_path]
 
 
 @cli.command(epilog=EPILOG)
@@ -250,12 +382,12 @@ def upload(file_path, sandbox):  # pylint: disable=unused-argument
 @cli.command(epilog=EPILOG)
 @click.argument("url", type=click_params.URL)
 def submit(url):  # pylint: disable=unused-argument
-    """Submit to Zenodo and open PFHub PR"""
+    """(Not implemented) Submit to Zenodo and open PFHub PR"""
 
 
 @cli.command(epilog=EPILOG)
 def submit_from_zenodo():  # pylint: disable=unused-argument
-    """Submit an existing Zenodo record to PFHub"""
+    """(Not implemented) Submit an existing Zenodo record to PFHub"""
 
 
 def zenodo_regexs():

@@ -9,10 +9,22 @@ import os
 import pathlib
 import shutil
 import urllib.parse
+import textwrap
 
 import requests
 from dotwiz import DotWiz
-from toolz.curried import pipe, dissoc, groupby, get, merge, cons, pluck, get_in, juxt
+from toolz.curried import (
+    pipe,
+    dissoc,
+    groupby,
+    get,
+    merge,
+    cons,
+    pluck,
+    get_in,
+    juxt,
+    assoc,
+)
 from toolz.curried import filter as filter_
 from toolz.curried import map as map_
 
@@ -182,21 +194,22 @@ def get_timeseries_info(meta_yaml, item):
     from `get_timeseries_info`.
 
     >>> meta_yaml = DotWiz(
+    ...     url="/a/b/c.yaml",
     ...     data=[DotWiz(name='free_energy', values=[DotWiz(x=0, y=1), DotWiz(x=1, y=2)])]
     ... )
     >>> item = DotWiz(name='free_energy', schema=DotWiz(
     ...     name='free_energy_1.csv', format='csv', columns=DotWiz(time='x', free_energy='y')
     ... ))
     >>> get_timeseries_info(meta_yaml, item)
-    DotWiz(dataframe=   x  y     data_set
-    0  0  1  free_energy
-    1  1  2  free_energy, name='free_energy_1.csv', format='csv', columns=[DotWiz(name='x'), DotWiz(name='y')])
+    DotWiz(dataframe=   x  y
+    0  0  1
+    1  1  2, name='free_energy_1.csv', format='csv', columns=[DotWiz(name='x'), DotWiz(name='y')])
 
     """  # pylint: disable=line-too-long # noqa: E501
     return pipe(
         [item.name],
         get_data_from_yaml(keys=["x", "y"], yaml_data=meta_yaml),
-        lambda x: x.rename(item.schema.columns),
+        lambda x: x.rename(columns=item.schema.columns).drop("data_set", axis=1),
         lambda x: dotwiz(
             {
                 "dataframe": x,
@@ -228,7 +241,8 @@ def meta_to_zenodo_(url):
     ['free_energy_1a.csv', 'pfhub.yaml']
 
     """
-    return pipe(url, read_yaml, dotwiz, get_file_strings)
+    add_url = lambda x: assoc(x, "url", url)
+    return pipe(url, read_yaml, add_url, dotwiz, get_file_strings)
 
 
 def meta_to_zenodo(url):
@@ -319,7 +333,9 @@ def get_file_strings(meta_yaml):
       the pfhub.yaml and necessary data files
 
     >>> yaml_file = str(getfixture('yaml_data_file'))
-    >>> out = get_file_strings(dotwiz(read_yaml(yaml_file)))
+    >>> yaml_data = read_yaml(yaml_file)
+    >>> yaml_data['url'] = yaml_file
+    >>> out = get_file_strings(dotwiz(yaml_data))
 
     The keys are files.
 
@@ -329,9 +345,9 @@ def get_file_strings(meta_yaml):
     The values are the file contents
 
     >>> print(out['free_energy_1a.csv'])
-    x,y,data_set
-    0.0,0.0,free_energy
-    1.0,1.0,free_energy
+    time,free_energy
+    0.0,0.0
+    1.0,1.0
     <BLANKLINE>
 
     """
@@ -400,13 +416,14 @@ def render_pfhub_schema(data, time_data, memory_data, timeseries):
     <BLANKLINE>
 
     """
-
     return render(
         "pfhub.schema",
         {
             "problem": data.benchmark.id,
             "benchmark_version": data.benchmark.version,
-            "summary": data.metadata.summary.encode("unicode_escape"),
+            "summary": textwrap.indent(
+                data.metadata.summary, "  "
+            ),  # .encode(encoding='UTF-8', errors="strict"),
             "contributors": [
                 {
                     "id": "github:" + data.metadata.author.github_id,

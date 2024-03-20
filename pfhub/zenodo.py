@@ -1,8 +1,10 @@
 """Download and convert a Zenodo DOI to a PFHub meta.yaml string
 """
+
 import pathlib
 import re
 from os.path import splitext
+import textwrap
 
 from toolz.curried import get, get_in, pipe, curry, itemmap, assoc, groupby, juxt
 from toolz.curried import filter as filter_
@@ -179,11 +181,14 @@ def subs(pfhub_meta, zenodo_meta, benchmark, lines_and_contours):
     get_name = lambda x: x["creators"][0]["name"].replace(" ", "").split(",")
 
     name = f"{pfhub_meta['software']['name']}_{benchmark['id']}_{zenodo_meta['doi']}"
+
     return {
         "first": get(1, get_name(zenodo_meta), ""),
         "last": get_name(zenodo_meta)[0],
         "orcid": zenodo_meta["creators"][0]["orcid"],
-        "summary": re.sub("<[^<]+?>", "", zenodo_meta["description"]),
+        "summary": textwrap.indent(
+            re.sub("<[^<]+?>", "", zenodo_meta["description"]), "    "
+        ),
         "timestamp": str(pandas.to_datetime(zenodo_meta["publication_date"])),
         "cpu_architecture": pfhub_meta["hardware"]["cpu_architecture"],
         "acc_architecture": pfhub_meta["hardware"]["acc_architecture"],
@@ -239,7 +244,7 @@ def zenodo_to_pfhub(url):
 
     >>> _ = list(map(print, zenodo_to_pfhub(
     ...     'https://doi.org/10.5281/zenodo.7199253'
-    ... ).splitlines()[:10]))  # doctest: +NORMALIZE_WHITESPACE
+    ... ).splitlines()[:11]))  # doctest: +NORMALIZE_WHITESPACE
     ---
     name: "fipy_8a_10.5281/zenodo.7199253"
     metadata:
@@ -249,8 +254,8 @@ def zenodo_to_pfhub(url):
         email:
         github_id:
       timestamp: "2022-08-31 00:00:00"
-      summary: FiPy implementation of benchmark 8a
-
+      summary: >-
+        FiPy implementation of benchmark 8a
     """
 
     return pipe(

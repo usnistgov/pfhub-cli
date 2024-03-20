@@ -15,7 +15,9 @@ from .cli import (
     validate_old,
     convert_to_old,
     upload,
+    render_notebook,
 )
+from ..func import read_yaml
 
 
 def test_cli():
@@ -233,10 +235,103 @@ def test_upload_to_zenodo():
     """Test upload to Zenodo"""
     runner = CliRunner()
     base = os.path.split(__file__)[0]
-    yaml_path = os.path.join(base, "..", "test_data", "pfhub.yaml")
+    yaml_path = os.path.join(base, "..", "test_data", "test_yaml", "pfhub.yaml")
     result = runner.invoke(upload, [yaml_path, "--sandbox"])
     assert result.exit_code == 0
     assert re.fullmatch(
         r"Uploaded to https://sandbox.zenodo.org/records/\d+",
         result.output.splitlines()[-1],
     )
+
+
+def test_render_notebook(tmpdir):
+    """Test render-notebook"""
+    runner = CliRunner()
+
+    result = runner.invoke(render_notebook, ["-b", "1a.1", "--dest", tmpdir])
+    output_path = os.path.join(tmpdir, "benchmark1a.1.ipynb")
+    result_path = os.path.join(tmpdir, "result_list_1a.1.yaml")
+    assert result.exit_code == 0
+    assert result.output.splitlines()[-1] == f"Writing: {output_path}, {result_path}"
+
+    result = runner.invoke(
+        render_notebook, ["-b", "1a.1", "--dest", tmpdir, "--clear-cache"]
+    )
+    assert result.exit_code == 0
+    assert result.output.splitlines()[-1] == f"Writing: {output_path}, {result_path}"
+
+    list_url = (
+        "https://gist.githubusercontent.com/wd15/"
+        "b61622b8e10baa9b0415b0a0a6bda365/raw/"
+        "0fccced5d22486cf0b1d7b012b0014c24b5f5d9c/result_list_empty.yaml"
+    )
+    result = runner.invoke(
+        render_notebook, ["-b", "1a.1", "--dest", tmpdir, "-l", list_url]
+    )
+    assert result.exit_code == 0
+    assert result.output.splitlines()[-1] == f"Writing: {output_path}, {result_path}"
+
+    result = runner.invoke(render_notebook, [])
+    assert result.exit_code == 1
+    assert (
+        result.output.splitlines()[-1]
+        == "Requires either --benchmark_id or --result-yaml to be specified"
+    )
+
+
+def test_adding_result_notebook(tmpdir):
+    """Test adding an old style meta.yaml to the result list"""
+    runner = CliRunner()
+    base = os.path.split(__file__)[0]
+    yaml_path = os.path.join(base, "..", "test_data", "relative", "meta.yaml")
+    list_path = os.path.join(
+        base, "..", "test_data", "relative", "result_list_empty.yaml"
+    )
+    result = runner.invoke(
+        render_notebook, ["-r", yaml_path, "--dest", tmpdir, "-l", list_path]
+    )
+    assert result.exit_code == 0
+
+
+def test_converting_new_to_old(tmpdir):
+    """Test converting new pfhub.yaml to old meta.yaml
+
+    Also, update the data item urls to point at the local path to files.
+    """
+    runner = CliRunner()
+    base = os.path.split(__file__)[0]
+    yaml_path = os.path.join(base, "..", "test_data", "meumapps", "pfhub.yaml")
+    result = runner.invoke(convert_to_old, [yaml_path, "--dest", tmpdir])
+    outpath = os.path.join(tmpdir, "meta.yaml")
+    assert result.exit_code == 0
+    assert result.output.splitlines()[-1] == f"Writing: {outpath}"
+    yaml_data = read_yaml(outpath)
+    assert yaml_data["data"][2]["url"] == os.path.join(
+        base, "..", "test_data", "meumapps", "free_energy_1a.csv"
+    )
+    assert yaml_data["data"][2]["name"] == "free_energy"
+
+
+def test_adding_new_result(tmpdir):
+    """Test adding a pfhub.yaml to the results"""
+    runner = CliRunner()
+    base = os.path.split(__file__)[0]
+    yaml_path = os.path.join(base, "..", "test_data", "meumapps", "pfhub.yaml")
+    result = runner.invoke(render_notebook, ["-r", yaml_path, "--dest", tmpdir])
+    outpath1 = os.path.join(tmpdir, "benchmark1a.1.ipynb")
+    outpath2 = os.path.join(tmpdir, "result_list_1a.1.yaml")
+    assert result.exit_code == 0
+    assert result.output.splitlines()[-1] == f"Writing: {outpath1}, {outpath2}"
+
+
+def test_name_generation(tmpdir):
+    """Test name generation when converting from new to old"""
+    runner = CliRunner()
+    base = os.path.split(__file__)[0]
+    yaml_path = os.path.join(base, "..", "test_data", "meumapps", "pfhub.yaml")
+    result = runner.invoke(convert_to_old, [yaml_path, "--dest", tmpdir])
+    outpath = os.path.join(tmpdir, "meta.yaml")
+    assert result.exit_code == 0
+    assert result.output.splitlines()[-1] == f"Writing: {outpath}"
+    data = read_yaml(outpath)
+    assert data["name"] == "meumapps-1a.1-stvdwtt-2021-04-01"

@@ -25,7 +25,19 @@ def test(*args):  # pragma: no cover
     import pytest  # pylint: disable=import-outside-toplevel
 
     path = os.path.join(os.path.split(__file__)[0])
-    pytest.main(args=[path, "--doctest-modules", "-r s", "--no-cov"] + list(args))
+    notebook_path = os.path.join(path, "notebooks")
+    pytest.main(
+        args=[
+            path,
+            "--doctest-modules",
+            "-r s",
+            "--no-cov",
+            "--nbval-lax",
+            "--ignore",
+            notebook_path,
+        ]
+        + list(args)
+    )
 
 
 __version__ = _version.get_versions()["version"]
